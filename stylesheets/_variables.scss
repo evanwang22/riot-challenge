@@ -1,0 +1,40 @@
+$black: #000000;
+$white: #FFFFFF;
+$transparent: rgba(0,0,0,0);
+
+$primary100: #BBDEFB;
+$primary300: #64B5F6;
+$primary500: #2196F3;
+$primary700: #1976D2;
+$primary900: #0D47A1;
+
+$gray100: #F5F5F5;
+$gray300: #E0E0E0;
+$gray500: #9E9E9E;
+$gray700: #616161;
+$gray900: #212121;
+
+// For light backgrounds (dark text)
+$darkTextPrimary: rgba(0,0,0,.87);
+$darkTextSecondary: rgba(0,0,0,.54);
+$darkTextDisabled: rgba(0,0,0,.38);
+$darkDivider: rgba(0,0,0,.22);
+$darkDividerSecondary: rgba(0,0,0,.12);
+
+// For dark backgrounds (light text)
+$lightTextPrimary: rgba(255,255,255, 1);
+$lightTextSecondary: rgba(255,255,255,.70);
+$lightTextDisabled: rgba(255,255,255,.30);
+$lightDivider: rgba(255,255,255,.12);
+
+$boxShadow: rgba(0,0,0,.75);
+
+
+// Dimensions
+$headerHeight: 40px;
+
+$gridGap: 12px;
+
+$titleHeight: 40px;
+$yAxisWidth: 70px;
+$xAxisHeight: 64px;
