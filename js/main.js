@@ -8,12 +8,33 @@ var barData = {
 }
 
 // Available colors
-var colorList = [];
+// Pulled from https://www.google.com/design/spec/style/color.html#color-color-palette
+var colorList = [
+  "#3F51B5", // Indigo
+  "#2196F3", // Blue
+  // "#03A9F4", // Light Blue - too similar to Blue
+  "#00BCD4", // Cyan
+  "#009688", // Teal
+  "#4CAF50", // Green
+  "#8BC34A", // Light Green
+  "#CDDC39", // Lime
+  "#FFEB3B", // Yellow
+  "#FFC107", // Amber
+  "#FF9800", // Orange
+  "#FF5722", // Deep Orange
+  "#F44336", // Red
+  "#E91E63", // Pink
+  "#9C27B0", // Purple
+  "#673AB7" // Deep Purple
+];
 // Number of colors in use
 var colorCount = 0;
 // Keeps track of item colors
 var colorMap = {};
 
+
+// TODO replace with an updateData function that takes new data from database
+// and formats it before handing off to graph.
 var randomizeData = function() {
   for (var barIndex in barData) {
     if (barData.hasOwnProperty(barIndex)) {
@@ -26,9 +47,10 @@ var randomizeData = function() {
     }
   }
   updateGraph();
-
 };
 
+// TODO need to rework this function
+// handle 3 cases: inserted sections, updated sections, deleted sections
 var updateGraph = function() {
   var totals = [];
   for (var barIndex in barData) {
@@ -56,30 +78,27 @@ var updateGraph = function() {
           if (barElem.find('.' + className).length)
             barElem.find('.' + className).height((percent * 100) + '%');
           else
-            barElem.prepend(itemSectionHtml(className, percent));
+            barElem.prepend(createItemSection(className, percent));
         }
       }
     }
   }
-
-  var height = $('#graph-y-axis').height();
-  $('#graph-y-axis .axis-title').width(height);
-  $('#graph-y-axis .axis-title').css('top', height);
 };
 
-var itemSectionHtml = function(item, percent) {
-  var $outer = $('<div>', {class: "graph-bar-section " + item});
+var createItemSection = function(className, percent) {
+  var $outer = $('<div>', {class: "graph-bar-section " + className});
   var $inner = $('<div>', {class: "graph-bar-section-inner"});
   var color;
-  if (colorMap[item])
-    color = colorMap[item];
+  if (colorMap[className])
+    color = colorMap[className];
   else {
-    color = Math.floor(Math.random()*16777215).toString(16);
-    while (color.length < 6) {
-      color = "0" + color;
+    if (className == "Other")
+      color = "#757575" // Grey
+    else {
+      color = colorList[colorCount];
+      colorCount++;
     }
-    color = '#' + color;
-    colorMap[item] = color;
+    colorMap[className] = color;
   }
 
   $outer.height((percent * 100) + '%');
@@ -89,5 +108,11 @@ var itemSectionHtml = function(item, percent) {
 };
 
 $(window).load(function() {
+
+  // TODO put this in separate function?
+  var height = $('#graph-y-axis').height();
+  $('#graph-y-axis .axis-title').width(height);
+  $('#graph-y-axis .axis-title').css('top', height);
+
   randomizeData();
 });

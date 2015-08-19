@@ -37,7 +37,7 @@ body {
   font-size: 24px;
 
   color: $lightTextPrimary;
-  background-color: $gray900;
+  background-color: $grey900;
 }
 
 #header-logo {
@@ -68,7 +68,8 @@ body {
 
 #graph-title {
     position: absolute;
-    width: 100%;
+    left: $yAxisWidth;
+    width: calc(100% - #{$yAxisWidth});
     height: $titleHeight;
 
     line-height: $titleHeight;
