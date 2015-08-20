@@ -24,19 +24,25 @@ body {
 
 #row-graph {
   height: 600px;
-  margin-top: 40px; }
+  margin-top: 40px;
+  padding-top: 40px; }
 
 #container-graph {
   float: left;
   width: 100%;
-  height: calc(100% - 40px);
-  margin-top: 40px; }
+  height: 100%; }
 
 #graph {
   position: relative;
   width: 80%;
   height: 100%;
-  margin: 0 auto 0 auto; }
+  margin: 0 auto 0 auto;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
 
 #graph-title {
   position: absolute;
@@ -45,7 +51,8 @@ body {
   height: 40px;
   line-height: 40px;
   font-size: 28px;
-  text-align: center; }
+  text-align: center;
+  cursor: default; }
 
 .axis-title {
   position: absolute;
@@ -121,16 +128,89 @@ body {
     width: calc(100% / 6);
     height: 100%; }
   #graph-area .graph-bar-section {
-    -webkit-transition: height, 500ms;
-    -moz-transition: height, 500ms;
-    -o-transition: height, 500ms;
-    transition: height, 500ms; }
+    position: relative;
+    -webkit-transition: height, 333ms;
+    -moz-transition: height, 333ms;
+    -o-transition: height, 333ms;
+    transition: height, 333ms; }
   #graph-area .graph-bar-section-inner {
+    position: absolute;
+    top: 2px;
+    left: 6px;
     width: calc(100% - 12px);
     height: calc(100% - 4px);
-    border-top: solid 2px #FFFFFF;
-    border-right: solid 6px #FFFFFF;
-    border-bottom: solid 2px #FFFFFF;
-    border-left: solid 6px #FFFFFF; }
+    -webkit-box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.75);
+    cursor: pointer; }
 
-/*# sourceMappingURL=output.css.map */
+#row-info {
+  min-height: 400px; }
+
+#container-info {
+  float: left;
+  width: 100%;
+  height: 100%; }
+
+#info {
+  position: relative;
+  width: 80%;
+  height: 100%;
+  margin: 0 auto 0 auto; }
+
+#patch-switch {
+  width: 196px;
+  height: 40px;
+  margin-left: 70px;
+  margin-top: 12px;
+  line-height: 40px;
+  font-size: 28px;
+  -webkit-box-shadow: inset 0 0 6px -2px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: inset 0 0 6px -2px rgba(0, 0, 0, 0.75);
+  box-shadow: inset 0 0 6px -2px rgba(0, 0, 0, 0.75);
+  cursor: pointer; }
+  #patch-switch #patch-switch-fill {
+    -webkit-box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.75); }
+
+.axis-title {
+  cursor: default; }
+
+.label {
+  cursor: default; }
+
+.data-switch {
+  position: relative;
+  color: white;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.38);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+  .data-switch .data-switch-first {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%; }
+  .data-switch .data-switch-second {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%; }
+  .data-switch .data-switch-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background-color: #2196f3;
+    -webkit-transition: left 333ms;
+    -moz-transition: left 333ms;
+    -o-transition: left 333ms;
+    transition: left 333ms; }

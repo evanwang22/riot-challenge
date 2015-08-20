@@ -48,15 +48,14 @@ body {
 ///// Graph Row /////
 #row-graph {
   height: 600px;
-
   margin-top: $headerHeight;
+  padding-top: $headerHeight;
 }
 
 #container-graph {
   float: left;
   width: 100%;
-  height: calc(100% - 40px);
-  margin-top: 40px;
+  height: 100%;
 }
 
 #graph {
@@ -64,6 +63,8 @@ body {
   width: 80%;
   height: 100%;
   margin: 0 auto 0 auto;
+
+  @include disable-select();
 }
 
 #graph-title {
@@ -75,6 +76,8 @@ body {
     line-height: $titleHeight;
     font-size: 28px;
     text-align: center;
+
+    cursor: default;
 }
 
 .axis-title {
@@ -171,24 +174,62 @@ body {
   }
 
   .graph-bar-section {
-    @include transition(height, 500ms);
+    position: relative;
+    @include transition(height, 333ms);
   }
 
   .graph-bar-section-inner {
+    position: absolute;
+    top: 2px;
+    left: 6px;
     width: calc(100% - 12px);
     height: calc(100% - 4px);
 
-    border-top: solid 2px $white;
-    border-right: solid 6px $white;
-    border-bottom: solid 2px $white;
-    border-left: solid 6px $white;
+    @include box-shadow(0 0 5px -1px $boxShadow);
+    cursor: pointer;
   }
 }
 
-///// Options Row /////
-#row-options {
-
+///// Info Row /////
+#row-info {
+  min-height: 400px;
 }
+
+#container-info {
+  float: left;
+  width: 100%;
+  height: 100%;
+}
+
+#info {
+  position: relative;
+  width: 80%;
+  height: 100%;
+  margin: 0 auto 0 auto;
+}
+
+#patch-switch {
+  width: 196px;
+  height: 40px;
+  margin-left: $yAxisWidth;
+  margin-top: 12px;
+
+  line-height: 40px;
+  font-size: 28px;
+
+  @include box-shadow(inset 0 0 6px -2px $boxShadow);
+  cursor: pointer;
+
+  #patch-switch-first {
+  }
+  #patch-switch-second {
+  }
+  #patch-switch-fill {
+    @include box-shadow(0 0 3px 1px $boxShadow);
+  }
+}
+
+
 
 ///// Champions Row /////
 #row-champions {
@@ -198,4 +239,55 @@ body {
 ///// Footer /////
 #footer {
 
+}
+
+///// Other /////
+.axis-title {
+  cursor: default;
+}
+
+.label {
+  cursor: default;
+}
+
+
+
+.data-switch {
+  position: relative;
+
+  color: $lightTextPrimary;
+  text-align: center;
+
+  background-color: $darkTextDisabled;
+
+  @include disable-select();
+
+  .data-switch-first {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+  }
+
+  .data-switch-second {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+  }
+
+  .data-switch-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+
+    background-color: $primary500;
+
+    @include transition(left 333ms);
+
+  }
 }

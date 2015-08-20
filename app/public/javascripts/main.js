@@ -112,10 +112,18 @@ var createItemSection = function(className, percent) {
 
 $(window).load(function() {
 
-  // TODO put this in separate function?
+  // TODO put this in separate function
   var height = $('#graph-y-axis').height();
   $('#graph-y-axis .axis-title').width(height);
   $('#graph-y-axis .axis-title').css('top', height);
+
+  // TODO put this is separate function
+  $('.data-switch').click(function() {
+    var position = $(this).attr('data-position') == 'first' ? 'second' : 'first';
+    $(this).attr('data-position', position);
+    $(this).find('.data-switch-fill').first().css('left', position == 'first' ? 0 : '50%');
+    randomizeData();
+  });
 
   randomizeData();
 });
