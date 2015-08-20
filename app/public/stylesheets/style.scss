@@ -1,0 +1,201 @@
+///// Imports /////
+@import 'variables';
+@import 'mixins';
+
+///// Content /////
+html {
+  color: $darkTextPrimary;
+  font-family: "Rajdhani", "Trebuchet MS", sans-serif;
+}
+
+body {
+  min-width: 600px;
+
+  margin: 0;
+}
+
+.row {
+  width: 100%;
+
+}
+
+.container {
+
+}
+
+#main-container {
+
+}
+
+///// Header /////
+#header {
+  position: fixed;
+  top: 0;
+  height: $headerHeight;
+
+  line-height: $headerHeight;
+  font-size: 24px;
+
+  color: $lightTextPrimary;
+  background-color: $grey900;
+}
+
+#header-logo {
+  float: left;
+  margin-left: $gridGap;
+}
+
+///// Graph Row /////
+#row-graph {
+  height: 600px;
+
+  margin-top: $headerHeight;
+}
+
+#container-graph {
+  float: left;
+  width: 100%;
+  height: calc(100% - 40px);
+  margin-top: 40px;
+}
+
+#graph {
+  position: relative;
+  width: 80%;
+  height: 100%;
+  margin: 0 auto 0 auto;
+}
+
+#graph-title {
+    position: absolute;
+    left: $yAxisWidth;
+    width: calc(100% - #{$yAxisWidth});
+    height: $titleHeight;
+
+    line-height: $titleHeight;
+    font-size: 28px;
+    text-align: center;
+}
+
+.axis-title {
+  position: absolute;
+
+  line-height: 32px;
+  font-size: 24px;
+  text-align: center;
+}
+
+#graph-y-axis {
+  position: absolute;
+  top: $titleHeight;
+  width: $yAxisWidth;
+  height: calc(100% - #{$xAxisHeight} - #{$titleHeight});
+
+  .axis-title {
+    left: 0;
+
+    @include transform(rotate(-90deg));
+    @include transform-origin(left top);
+  }
+
+  .label {
+    height: calc(100% / 5);
+    padding-right: 10px;
+
+    line-height: 20px;
+    font-size: 20px;
+    text-align: right;
+  }
+  .label.first {
+    margin-top: -10px;
+  }
+  .label.last {
+    height: 0px;
+  }
+}
+
+#graph-x-axis {
+  position: absolute;
+  top: calc(100% - #{$xAxisHeight});
+  left: $yAxisWidth;
+  width: calc(100% - #{$yAxisWidth});
+  height: $xAxisHeight;
+
+  .axis-title {
+    width: 100%;
+
+    top: calc(100% - 24px);
+  }
+
+  .label {
+    float: left;
+    width: calc(100% / 6);
+    margin-top: 8px;
+
+    line-height: 32px;
+    font-size: 20px;
+    text-align: center;
+
+    border-top: 1px solid $darkDivider;
+  }
+
+  .divider {
+    float: left;
+    width: 1px;
+    height: 16px;
+
+    margin-top: 8px;
+    margin-left: -1px;
+    background-color: $darkDivider;
+  }
+}
+
+#graph-corner {
+  position: absolute;
+  top: calc(100% - #{$xAxisHeight});
+  width: $yAxisWidth;
+  height: $xAxisHeight;
+}
+
+#graph-area {
+  position: absolute;
+  top: #{$titleHeight};
+  left: $yAxisWidth;
+  width: calc(100% - #{$yAxisWidth});
+  height: calc(100% - #{$xAxisHeight} - #{$titleHeight});
+
+  .graph-bar {
+    float: left;
+    width: calc(100% / 6);
+    height: 100%;
+  }
+
+  .graph-bar-section {
+    @include transition(height, 500ms);
+  }
+
+  .graph-bar-section-inner {
+    width: calc(100% - 12px);
+    height: calc(100% - 4px);
+
+    border-top: solid 2px $white;
+    border-right: solid 6px $white;
+    border-bottom: solid 2px $white;
+    border-left: solid 6px $white;
+  }
+}
+
+///// Options Row /////
+#row-options {
+
+}
+
+///// Champions Row /////
+#row-champions {
+
+}
+
+///// Footer /////
+#footer {
+
+}

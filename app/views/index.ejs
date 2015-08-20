@@ -2,10 +2,98 @@
 <html>
   <head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+
+    <script src="../javascripts/jquery.min.js"></script>
+    <script src="../javascripts/main.js"></script>
+    <link href="../stylesheets/output.css" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Rajdhani:400,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
   </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
-</html>
+
+<body>
+  <div id="wrapper">
+
+    <!-- Header -->
+    <div id="header" class="row">
+      <div id="header-logo">
+  		    Riot Challenge
+      </div>
+  	</div>
+
+    <!-- Main Content -->
+    <div id="main-container" class="container">
+
+      <!-- Graph Row -->
+  		<div id="row-graph" class="row">
+        <div id="container-graph" class="container">
+          <div id="graph">
+            <div id="graph-title">Major Item Completion Order Rates</div>
+            <div id="graph-y-axis">
+              <div class="axis-title">Build Rate</div>
+              <div class="label first">100</div>
+              <div class="label">80</div>
+              <div class="label">60</div>
+              <div class="label">40</div>
+              <div class="label">20</div>
+              <div class="label last">0</div>
+            </div>
+            <div id="graph-x-axis">
+              <div class="axis-title">Completion Position</div>
+              <div class="divider"></div>
+              <div class="label">1st</div>
+              <div class="divider"></div>
+              <div class="label">2nd</div>
+              <div class="divider"></div>
+              <div class="label">3rd</div>
+              <div class="divider"></div>
+              <div class="label">4th</div>
+              <div class="divider"></div>
+              <div class="label">5th</div>
+              <div class="divider"></div>
+              <div class="label">6th</div>
+              <div class="divider"></div>
+            </div>
+            <div id="graph-corner">
+            </div>
+            <div id="graph-area">
+              <div id="graph-background">
+              </div>
+              <div id="bar-1" class="graph-bar">
+              </div>
+              <div id="bar-2" class="graph-bar">
+              </div>
+              <div id="bar-3" class="graph-bar">
+              </div>
+              <div id="bar-4" class="graph-bar">
+              </div>
+              <div id="bar-5" class="graph-bar">
+              </div>
+              <div id="bar-6" class="graph-bar">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Options Row -->
+      <div id="row-options" class="row">
+
+
+      </div>
+
+      <!-- Champions Row -->
+      <div id="row-champions" class="row">
+
+
+      </div>
+
+
+
+      <!-- Footer -->
+      <div id="footer" class="row">
+    	</div>
+    </div>
+  </div>
+</body>
