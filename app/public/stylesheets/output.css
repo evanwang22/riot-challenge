@@ -13,6 +13,7 @@ body {
   position: fixed;
   top: 0;
   height: 40px;
+  z-index: 1;
   line-height: 40px;
   font-size: 24px;
   color: white;
@@ -24,19 +25,25 @@ body {
 
 #row-graph {
   height: 600px;
-  margin-top: 40px; }
+  margin-top: 40px;
+  padding-top: 40px; }
 
 #container-graph {
   float: left;
   width: 100%;
-  height: calc(100% - 40px);
-  margin-top: 40px; }
+  height: 100%; }
 
 #graph {
   position: relative;
   width: 80%;
   height: 100%;
-  margin: 0 auto 0 auto; }
+  margin: 0 auto 0 auto;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
 
 #graph-title {
   position: absolute;
@@ -45,19 +52,24 @@ body {
   height: 40px;
   line-height: 40px;
   font-size: 28px;
-  text-align: center; }
+  text-align: center;
+  cursor: default; }
 
 .axis-title {
   position: absolute;
   line-height: 32px;
   font-size: 24px;
-  text-align: center; }
+  text-align: center;
+  cursor: default; }
+
+.label {
+  cursor: default; }
 
 #graph-y-axis {
   position: absolute;
   top: 40px;
   width: 70px;
-  height: calc(100% - 64px - 40px); }
+  height: calc(100% - 72px - 40px); }
   #graph-y-axis .axis-title {
     left: 0;
     -webkit-transform: rotate(-90deg);
@@ -81,13 +93,13 @@ body {
 
 #graph-x-axis {
   position: absolute;
-  top: calc(100% - 64px);
+  top: calc(100% - 72px);
   left: 70px;
   width: calc(100% - 70px);
-  height: 64px; }
+  height: 72px; }
   #graph-x-axis .axis-title {
     width: 100%;
-    top: calc(100% - 24px); }
+    top: calc(100% - 32px); }
   #graph-x-axis .label {
     float: left;
     width: calc(100% / 6);
@@ -95,42 +107,176 @@ body {
     line-height: 32px;
     font-size: 20px;
     text-align: center;
-    border-top: 1px solid rgba(0, 0, 0, 0.22); }
+    border-top: 1px solid rgba(0, 0, 0, 0.38); }
   #graph-x-axis .divider {
     float: left;
     width: 1px;
     height: 16px;
     margin-top: 8px;
     margin-left: -1px;
-    background-color: rgba(0, 0, 0, 0.22); }
+    background-color: rgba(0, 0, 0, 0.38); }
 
 #graph-corner {
   position: absolute;
-  top: calc(100% - 64px);
+  top: calc(100% - 72px);
   width: 70px;
-  height: 64px; }
+  height: 72px; }
 
 #graph-area {
   position: absolute;
   top: 40px;
   left: 70px;
   width: calc(100% - 70px);
-  height: calc(100% - 64px - 40px); }
+  height: calc(100% - 72px - 40px); }
   #graph-area .graph-bar {
     float: left;
     width: calc(100% / 6);
     height: 100%; }
   #graph-area .graph-bar-section {
-    -webkit-transition: height, 500ms;
-    -moz-transition: height, 500ms;
-    -o-transition: height, 500ms;
-    transition: height, 500ms; }
+    position: relative;
+    -webkit-transition: height, 333ms;
+    -moz-transition: height, 333ms;
+    -o-transition: height, 333ms;
+    transition: height, 333ms; }
   #graph-area .graph-bar-section-inner {
+    position: absolute;
+    top: 2px;
+    left: 6px;
     width: calc(100% - 12px);
     height: calc(100% - 4px);
-    border-top: solid 2px #FFFFFF;
-    border-right: solid 6px #FFFFFF;
-    border-bottom: solid 2px #FFFFFF;
-    border-left: solid 6px #FFFFFF; }
+    border-radius: 2px;
+    -webkit-box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.75);
+    -webkit-transition: box-shadow 333ms;
+    -moz-transition: box-shadow 333ms;
+    -o-transition: box-shadow 333ms;
+    transition: box-shadow 333ms;
+    cursor: pointer; }
+  #graph-area .graph-bar-section-inner.active {
+    -webkit-box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.75); }
 
-/*# sourceMappingURL=output.css.map */
+#row-info {
+  min-height: 400px; }
+
+#container-info {
+  float: left;
+  width: 100%;
+  height: 100%; }
+
+#info {
+  position: relative;
+  width: 80%;
+  height: 100%;
+  margin: 12px auto 0 auto;
+  border-top: solid 1px rgba(0, 0, 0, 0.22); }
+
+#patch-switch {
+  float: right;
+  width: 196px;
+  height: 40px;
+  margin-top: 12px;
+  line-height: 40px;
+  font-size: 28px;
+  -webkit-box-shadow: inset 0 0 6px -2px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: inset 0 0 6px -2px rgba(0, 0, 0, 0.75);
+  box-shadow: inset 0 0 6px -2px rgba(0, 0, 0, 0.75);
+  cursor: pointer; }
+  #patch-switch #patch-switch-fill {
+    -webkit-box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.75); }
+
+#legend {
+  float: left;
+  width: calc(100% - 200px - 70px);
+  margin-top: 4px;
+  margin-left: 70px; }
+  #legend #legend-title {
+    float: left;
+    width: 70px;
+    margin-top: 4px;
+    margin-left: -70px;
+    line-height: 28px;
+    font-size: calc(28px - 8px);
+    text-align: center; }
+  #legend .legend-section {
+    float: left;
+    width: calc(15% + 100px);
+    min-width: 200px;
+    height: 28px;
+    margin-top: 8px;
+    margin-left: 6px;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-transition: color 333ms, background-color 333ms;
+    -moz-transition: color 333ms, background-color 333ms;
+    -o-transition: color 333ms, background-color 333ms;
+    transition: color 333ms, background-color 333ms; }
+    #legend .legend-section .legend-section-swatch {
+      float: left;
+      width: calc(28px / 2);
+      height: 100%;
+      margin-right: 6px; }
+    #legend .legend-section .legend-section-image {
+      float: left;
+      width: 28px;
+      height: 100%;
+      background-size: cover;
+      background-color: #424242; }
+    #legend .legend-section .legend-section-text {
+      float: left;
+      width: calc(100% - 3 * 28px / 2 - 18px);
+      height: 100%;
+      padding: 0 6px 0 6px;
+      line-height: 28px;
+      font-size: calc(28px - 12px);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis; }
+  #legend .legend-section:hover {
+    color: white; }
+
+.data-switch {
+  position: relative;
+  color: white;
+  text-align: center;
+  background-color: #bdbdbd;
+  border-radius: 2px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+  .data-switch .data-switch-first {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%; }
+  .data-switch .data-switch-second {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%; }
+  .data-switch .data-switch-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background-color: #757575;
+    border-radius: 2px;
+    -webkit-transition: left 333ms;
+    -moz-transition: left 333ms;
+    -o-transition: left 333ms;
+    transition: left 333ms; }

@@ -32,6 +32,7 @@ body {
   position: fixed;
   top: 0;
   height: $headerHeight;
+  z-index: 1;
 
   line-height: $headerHeight;
   font-size: 24px;
@@ -48,15 +49,14 @@ body {
 ///// Graph Row /////
 #row-graph {
   height: 600px;
-
   margin-top: $headerHeight;
+  padding-top: $headerHeight;
 }
 
 #container-graph {
   float: left;
   width: 100%;
-  height: calc(100% - 40px);
-  margin-top: 40px;
+  height: 100%;
 }
 
 #graph {
@@ -64,6 +64,8 @@ body {
   width: 80%;
   height: 100%;
   margin: 0 auto 0 auto;
+
+  @include disable-select();
 }
 
 #graph-title {
@@ -75,6 +77,8 @@ body {
     line-height: $titleHeight;
     font-size: 28px;
     text-align: center;
+
+    cursor: default;
 }
 
 .axis-title {
@@ -83,6 +87,12 @@ body {
   line-height: 32px;
   font-size: 24px;
   text-align: center;
+
+  cursor: default;
+}
+
+.label {
+  cursor: default;
 }
 
 #graph-y-axis {
@@ -123,8 +133,7 @@ body {
 
   .axis-title {
     width: 100%;
-
-    top: calc(100% - 24px);
+    top: calc(100% - 32px);
   }
 
   .label {
@@ -136,7 +145,7 @@ body {
     font-size: 20px;
     text-align: center;
 
-    border-top: 1px solid $darkDivider;
+    border-top: 1px solid $darkTextDisabled;
   }
 
   .divider {
@@ -146,7 +155,7 @@ body {
 
     margin-top: 8px;
     margin-left: -1px;
-    background-color: $darkDivider;
+    background-color: $darkTextDisabled;
   }
 }
 
@@ -171,23 +180,132 @@ body {
   }
 
   .graph-bar-section {
-    @include transition(height, 500ms);
+    position: relative;
+    @include transition(height, 333ms);
   }
 
   .graph-bar-section-inner {
+    position: absolute;
+    top: 2px;
+    left: 6px;
     width: calc(100% - 12px);
     height: calc(100% - 4px);
 
-    border-top: solid 2px $white;
-    border-right: solid 6px $white;
-    border-bottom: solid 2px $white;
-    border-left: solid 6px $white;
+    border-radius: 2px;
+    @include box-shadow(0 0 5px -1px $boxShadow);
+    @include transition(box-shadow 333ms);
+    cursor: pointer;
+  }
+
+  .graph-bar-section-inner.active {
+    @include box-shadow(0 0 3px 1px $boxShadow);
   }
 }
 
-///// Options Row /////
-#row-options {
+///// Info Row /////
+#row-info {
+  min-height: 400px;
+}
 
+#container-info {
+  float: left;
+  width: 100%;
+  height: 100%;
+}
+
+#info {
+  position: relative;
+  width: 80%;
+  height: 100%;
+  margin: 12px auto 0 auto;
+
+  border-top: solid 1px $darkDivider;
+}
+
+#patch-switch {
+  float: right;
+  width: 196px;
+  height: 40px;
+  margin-top: 12px;
+
+  line-height: 40px;
+  font-size: 28px;
+
+  @include box-shadow(inset 0 0 6px -2px $boxShadow);
+  cursor: pointer;
+
+  #patch-switch-first {
+  }
+  #patch-switch-second {
+  }
+  #patch-switch-fill {
+    @include box-shadow(0 0 2px 1px $boxShadow);
+  }
+}
+
+#legend {
+  float: left;
+  width: calc(100% - 200px - #{$yAxisWidth});
+  //min-width: calc(.8 * 600px - #{$yAxisWidth});
+  margin-top: 4px;
+  margin-left: $yAxisWidth;
+
+  #legend-title {
+    float: left;
+    width: $yAxisWidth;
+    margin-top: 4px;
+    margin-left: -$yAxisWidth;
+
+    line-height: $legendSize;
+    font-size: calc(#{$legendSize} - 8px);
+    text-align: center;
+  }
+
+  .legend-section {
+    float: left;
+    width: calc(15% + 100px);
+    min-width: 200px;
+    height: $legendSize;
+    margin-top: 8px;
+    margin-left: 6px;
+
+    cursor: pointer;
+    @include disable-select();
+    @include transition(color 333ms, background-color 333ms);
+
+    .legend-section-swatch {
+      float: left;
+      width: calc(#{$legendSize} / 2);
+      height: 100%;
+
+      margin-right: 6px;
+    }
+    .legend-section-image {
+      float: left;
+      width: $legendSize;
+      height: 100%;
+
+    	background-size: cover;
+      background-color: $grey800;
+    }
+    .legend-section-text {
+      float: left;
+      width: calc(100% - 3 * #{$legendSize} / 2 - 18px); // subtract image, swatch, swatch margin, padding
+      height: 100%;
+      padding: 0 6px 0 6px;
+
+      line-height: #{$legendSize};
+      font-size: calc(#{$legendSize} - 12px);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+
+    }
+  }
+
+  .legend-section:hover {
+      color: $lightTextPrimary;
+  }
 }
 
 ///// Champions Row /////
@@ -198,4 +316,46 @@ body {
 ///// Footer /////
 #footer {
 
+}
+
+///// Other /////
+.data-switch {
+  position: relative;
+
+  color: $lightTextPrimary;
+  text-align: center;
+
+  background-color: $grey400;
+  border-radius: 2px;
+  @include disable-select();
+
+  .data-switch-first {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+  }
+
+  .data-switch-second {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+  }
+
+  .data-switch-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+
+    background-color: $grey600;
+    border-radius: 2px;
+
+    @include transition(left 333ms);
+
+  }
 }
