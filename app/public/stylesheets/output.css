@@ -153,13 +153,14 @@ body {
     -o-transition: box-shadow 333ms;
     transition: box-shadow 333ms;
     cursor: pointer; }
-  #graph-area .graph-bar-section-inner.active {
+  #graph-area .graph-bar-section-inner.focus {
     -webkit-box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.75);
     -moz-box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.75);
     box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.75); }
-
-#row-info {
-  min-height: 400px; }
+  #graph-area .graph-bar-section-inner.focus:active {
+    -webkit-box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.75); }
 
 #container-info {
   float: left;
@@ -185,6 +186,7 @@ body {
   box-shadow: inset 0 0 6px -2px rgba(0, 0, 0, 0.75);
   cursor: pointer; }
   #patch-switch #patch-switch-fill {
+    left: 50%;
     -webkit-box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.75);
     -moz-box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.75);
     box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.75); }
@@ -216,10 +218,10 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    -webkit-transition: color 333ms, background-color 333ms;
-    -moz-transition: color 333ms, background-color 333ms;
-    -o-transition: color 333ms, background-color 333ms;
-    transition: color 333ms, background-color 333ms; }
+    -webkit-transition: color 333ms, background-color 333ms, box-shadow 333ms;
+    -moz-transition: color 333ms, background-color 333ms, box-shadow 333ms;
+    -o-transition: color 333ms, background-color 333ms, box-shadow 333ms;
+    transition: color 333ms, background-color 333ms, box-shadow 333ms; }
     #legend .legend-section .legend-section-swatch {
       float: left;
       width: calc(28px / 2);
@@ -242,7 +244,13 @@ body {
       white-space: nowrap;
       text-overflow: ellipsis; }
   #legend .legend-section:hover {
-    color: white; }
+    -webkit-box-shadow: 0 0 3px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 3px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 3px 0px rgba(0, 0, 0, 0.75); }
+  #legend .legend-section:active {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none; }
 
 .data-switch {
   position: relative;

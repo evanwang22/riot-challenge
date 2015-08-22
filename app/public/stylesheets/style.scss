@@ -197,14 +197,18 @@ body {
     cursor: pointer;
   }
 
-  .graph-bar-section-inner.active {
+  .graph-bar-section-inner.focus {
     @include box-shadow(0 0 3px 1px $boxShadow);
   }
+
+  .graph-bar-section-inner.focus:active {
+    @include box-shadow(0 0 5px -1px $boxShadow);
+  }
+
 }
 
 ///// Info Row /////
 #row-info {
-  min-height: 400px;
 }
 
 #container-info {
@@ -239,6 +243,7 @@ body {
   #patch-switch-second {
   }
   #patch-switch-fill {
+    left: 50%;
     @include box-shadow(0 0 2px 1px $boxShadow);
   }
 }
@@ -271,7 +276,7 @@ body {
 
     cursor: pointer;
     @include disable-select();
-    @include transition(color 333ms, background-color 333ms);
+    @include transition(color 333ms, background-color 333ms, box-shadow 333ms);
 
     .legend-section-swatch {
       float: left;
@@ -304,7 +309,11 @@ body {
   }
 
   .legend-section:hover {
-      color: $lightTextPrimary;
+    @include box-shadow(0 0 3px 0px $boxShadow);
+  }
+
+  .legend-section:active {
+    @include box-shadow(none);
   }
 }
 
