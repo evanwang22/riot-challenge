@@ -139,7 +139,7 @@ def seed(match_ids):
             data_object_map = {}
             for participant in match_participants:
                 data_object = {}
-                data_object['champion'] = champions_json[str(participant['championId'])]
+                data_object['champion'] = champions_json[str(participant['championId'])]['name']
                 data_object['items'] = []
                 data_object['win'] = next((team['winner'] for team in match_teams if team['teamId'] == participant['teamId']))
 
