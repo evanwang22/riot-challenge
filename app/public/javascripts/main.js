@@ -40,15 +40,21 @@ var filteredItems = {};
 // Keeps track of patch to show data for
 var patch = '5.14';
 
-// TODO replace with an updateData/getData function that takes new data from database
-// and formats it before handing off to graph.
+/*
+TODO replace with an updateData/getData function that takes new data from database
+and formats it before handing off to graph.
+make sure it clears filteredItems
+*/
 var randomizeData = function() {
   for (var barIndex in sampleData) {
     if (sampleData.hasOwnProperty(barIndex)) {
       var bar = sampleData[barIndex];
       for (var item in bar) {
         if (bar.hasOwnProperty(item)) {
-          bar[item] = 20 + 40 * Math.random();
+          if (Math.random() > .8)
+            bar[item] = 0;
+          else
+            bar[item] = 20 + 40 * Math.random();
         }
       }
     }
