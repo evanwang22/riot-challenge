@@ -1,18 +1,8 @@
-var sampleData = {
-  1: {"Rylai's Crystal Sceptre" : 0, "Athene's Unholy Grail" : 0, "Liandry's Torment" : 0, "Other" : 0},
-  2: {"Rylai's Crystal Sceptre" : 0, "Athene's Unholy Grail" : 0, "Liandry's Torment" : 0, "Rabadon's Deathcap" : 0, "Other" : 0},
-  3: {"Athene's Unholy Grail" : 0, "Liandry's Torment" : 0, "Rabadon's Deathcap" : 0, "Void Staff" : 0, "Other" : 0},
-  4: {"Liandry's Torment" : 0, "Rabadon's Deathcap" : 0, "Void Staff" : 0, "Other" : 0},
-  5: {"Rabadon's Deathcap" : 0, "Void Staff" : 0, "Luden's Echo" : 0, "Other" : 0},
-  6: {"Rabadon's Deathcap" : 0, "Void Staff" : 0, "Luden's Echo" : 0, "Zhonya's Hourglass" : 0, "Other" : 0},
-}
-
 // Available colors
 // Pulled from https://www.google.com/design/spec/style/color.html#color-color-palette
 var colorList = [
   "#3F51B5", // Indigo
   "#2196F3", // Blue
-  // "#03A9F4", // Light Blue - too similar to Blue
   "#00BCD4", // Cyan
   "#009688", // Teal
   "#4CAF50", // Green
@@ -75,8 +65,8 @@ var updateGraph = function(barData) {
   var totals = [];
 
   // Loop through each bar in barData object
-  for (var barIndex in barData) {
-    var bar = barData[barIndex];
+
+  barData.forEach(function(bar, barIndex) {
     totals[barIndex] = 0;
 
     // Loop through each item in bar
@@ -86,7 +76,7 @@ var updateGraph = function(barData) {
       // Process item the first time we see it
       if(!newItems[item]) {
         // Map item to its class name (to be used by associated DOM elements)
-        newItems[item] = item.replace(/\s|'/g, "");
+        newItems[item] = item.replace(/\s|'|\(|\)|:/g, "");
 
         // Check to see if item was in old graph
         // Assign color and create new legend section if not
@@ -108,13 +98,12 @@ var updateGraph = function(barData) {
         }
       }
     }
-  }
+  });
 
   // Create/update/remove graph sections
   // Needed totals to properly size sections
   var graph = $('#graph');
-  for (var barIndex in barData) {
-    var bar = barData[barIndex];
+  barData.forEach(function(bar, barIndex) {
     var barElement = $('#graph').find('#bar-' + barIndex);
 
     // Update/add bar sections
@@ -128,7 +117,7 @@ var updateGraph = function(barData) {
       else
         barElement.prepend(createItemSection(item, newItems[item], percent));
     }
-  }
+  });
 
   // Remove bar and legend sections for
   // items that are no longer present (following a graph update)
@@ -244,7 +233,9 @@ $(window).load(function() {
 
     // TODO replace with updateData/getData
     randomizeData();
-  });
 
-  randomizeData();
+  });
+  $.get('/data', function(data) {
+    updateGraph(data.matchItemData);
+  });
 });
