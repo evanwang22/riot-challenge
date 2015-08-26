@@ -50,7 +50,7 @@ item_list = [
 "Righteous Glory",
 "Rod of Ages",
 "Runaan's Hurricane (Ranged Only)",
-"Rylai's Crystal Sceptre",
+"Rylai's Crystal Scepter",
 "Sightstone",
 "Spirit Visage",
 "Statikk Shiv",
@@ -170,6 +170,7 @@ def seed(match_ids):
                 data_object = data_object_map[str(event['participantId'])]
                 if str(event['itemId']) in items_json:
                     item_name = items_json[str(event['itemId'])]['name']
+                    # TODO check for sightstone
                     if item_name in item_list and item_name not in data_object['items']:
                         data_object['items'].append(item_name);
 

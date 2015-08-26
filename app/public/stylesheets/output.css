@@ -154,9 +154,13 @@ body {
     transition: box-shadow 333ms;
     cursor: pointer; }
   #graph-area .graph-bar-section-inner.focus {
-    -webkit-box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.75);
-    -moz-box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.75);
-    box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.75); }
+    -webkit-box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.75);
+    -webkit-animation: barSectionPulse 1.5s infinite ease-in-out;
+    -moz-animation: barSectionPulse 1.5s infinite ease-in-out;
+    -o-animation: barSectionPulse 1.5s infinite ease-in-out;
+    animation: barSectionPulse 1.5s infinite ease-in-out; }
   #graph-area .graph-bar-section-inner.focus:active {
     -webkit-box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.75);
     -moz-box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.75);
@@ -218,10 +222,10 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    -webkit-transition: color 333ms, background-color 333ms, box-shadow 333ms;
-    -moz-transition: color 333ms, background-color 333ms, box-shadow 333ms;
-    -o-transition: color 333ms, background-color 333ms, box-shadow 333ms;
-    transition: color 333ms, background-color 333ms, box-shadow 333ms; }
+    -webkit-transition: color 333ms, background-color 333ms, box-shadow 333ms, opacity 333ms;
+    -moz-transition: color 333ms, background-color 333ms, box-shadow 333ms, opacity 333ms;
+    -o-transition: color 333ms, background-color 333ms, box-shadow 333ms, opacity 333ms;
+    transition: color 333ms, background-color 333ms, box-shadow 333ms, opacity 333ms; }
     #legend .legend-section .legend-section-swatch {
       float: left;
       width: calc(28px / 2);
@@ -288,3 +292,43 @@ body {
     -moz-transition: left 333ms;
     -o-transition: left 333ms;
     transition: left 333ms; }
+
+@-webkit-keyframes barSectionPulse {
+  0% {
+    opacity: 1; }
+
+  50% {
+    opacity: 0.75; }
+
+  100% {
+    opacity: 1; } }
+
+@-moz-keyframes barSectionPulse {
+  0% {
+    opacity: 1; }
+
+  50% {
+    opacity: 0.75; }
+
+  100% {
+    opacity: 1; } }
+
+@-o-keyframes barSectionPulse {
+  0% {
+    opacity: 1; }
+
+  50% {
+    opacity: 0.75; }
+
+  100% {
+    opacity: 1; } }
+
+@keyframes barSectionPulse {
+  0% {
+    opacity: 1; }
+
+  50% {
+    opacity: 0.75; }
+
+  100% {
+    opacity: 1; } }

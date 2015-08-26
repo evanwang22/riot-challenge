@@ -8,10 +8,32 @@ router.get('/', function(req, res, next) {
 });
 
 /* GET data for all items, async */
-router.get('/data', function(req, res, next) {
+/* TODO Fix this so data returns both 5.11 and 5.14 data together? */
+router.get('/data/5.11', function(req, res, next) {
   var matchData = db.get('match_data');
   matchData.find({}, function(err, docs){
+    var items = [{}, {}, {}, {}, {}, {}];
+    items.forEach(function(itemSlot, slotIndex){
+      docs.forEach(function(doc){
+        for (var player in doc) {
+          if (doc[player].items && doc[player].items[slotIndex]) {
+            var boughtItem = doc[player].items[slotIndex];
+            if (itemSlot[boughtItem]) {
+              itemSlot[boughtItem] += 1;
+            } else {
+              itemSlot[boughtItem] = 1;
+            }
+          }
+        }
+      });
+    });
+    res.json({ matchItemData: items });
+  });
+});
 
+router.get('/data/5.14', function(req, res, next) {
+  var matchData = db.get('match_data2');
+  matchData.find({}, function(err, docs){
     var items = [{}, {}, {}, {}, {}, {}];
     items.forEach(function(itemSlot, slotIndex){
       docs.forEach(function(doc){
@@ -43,5 +65,3 @@ router.get('/singleItemData', function(req, res, next) {
 });
 
 module.exports = router;
-
-

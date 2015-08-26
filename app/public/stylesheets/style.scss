@@ -198,7 +198,8 @@ body {
   }
 
   .graph-bar-section-inner.focus {
-    @include box-shadow(0 0 3px 1px $boxShadow);
+    @include box-shadow(0 0 4px 0px $boxShadow);
+    @include animation(barSectionPulse 1.5s infinite ease-in-out);
   }
 
   .graph-bar-section-inner.focus:active {
@@ -276,7 +277,7 @@ body {
 
     cursor: pointer;
     @include disable-select();
-    @include transition(color 333ms, background-color 333ms, box-shadow 333ms);
+    @include transition(color 333ms, background-color 333ms, box-shadow 333ms, opacity 333ms);
 
     .legend-section-swatch {
       float: left;
@@ -367,4 +368,25 @@ body {
     @include transition(left 333ms);
 
   }
+}
+
+@-webkit-keyframes barSectionPulse {
+  0%    { opacity: 1 }
+  50%   { opacity: .75 }
+  100%  { opacity: 1 }
+}
+@-moz-keyframes barSectionPulse {
+  0%    { opacity: 1 }
+  50%   { opacity: .75 }
+  100%  { opacity: 1 }
+}
+@-o-keyframes barSectionPulse {
+  0%    { opacity: 1 }
+  50%   { opacity: .75 }
+  100%  { opacity: 1 }
+}
+@keyframes barSectionPulse {
+  0%    { opacity: 1 }
+  50%   { opacity: .75 }
+  100%  { opacity: 1 }
 }

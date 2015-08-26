@@ -1,3 +1,84 @@
+var itemList = [
+"Abyssal Scepter",
+"Archangel's Staff",
+"Ardent Censer",
+"Athene's Unholy Grail",
+"Banner of Command",
+"Banshee's Veil",
+"Blade of the Ruined King",
+"The Black Cleaver",
+"The Bloodthirster",
+"Dead Man's Plate",
+"Essence Reaver",
+"Face of the Mountain",
+"Frost Queen's Claim",
+"Frozen Heart",
+"Frozen Mallet",
+"Guardian Angel",
+"Guinsoo's Rageblade",
+"Hextech Gunblade",
+"Iceborn Gauntlet",
+"Infinity Edge",
+"Last Whisper",
+"Liandry's Torment",
+"Lich Bane",
+"Locket of the Iron Solari",
+"Luden's Echo",
+"Manamune",
+"Maw of Malmortius",
+"Mejai's Soulstealer",
+"Mercurial Scimitar",
+"Mikael's Crucible",
+"Morellonomicon",
+"Nashor's Tooth",
+"Ohmwrecker",
+"Phantom Dancer",
+"Rabadon's Deathcap",
+"Randuin's Omen",
+"Ravenous Hydra (Melee Only)",
+"Righteous Glory",
+"Rod of Ages",
+"Runaan's Hurricane (Ranged Only)",
+"Rylai's Crystal Scepter",
+"Sightstone",
+"Spirit Visage",
+"Statikk Shiv",
+"Sterak's Gage",
+"Sunfire Cape",
+"Sword of the Occult",
+"Talisman of Ascension",
+"Thornmail",
+"Titanic Hydra",
+"Trinity Force",
+"Twin Shadows",
+"Void Staff",
+"Warmog's Armor",
+"Will of the Ancients",
+"Wit's End",
+"Youmuu's Ghostblade",
+"Zeke's Harbinger",
+"Zeke's Herald",
+"Zephyr",
+"Zhonya's Hourglass",
+"Zz'Rot Portal",
+
+"Boots of Swiftness",
+"Mercury's Treads",
+"Sorcerer's Shoes",
+"Boots of Mobility",
+"Berserker's Greaves",
+"Ionian Boots of Lucidity",
+
+"Perfect Hex Core",
+
+"Enchantment: Warrior",
+"Enchantment: Magus",
+"Enchantment: Runeglaive",
+"Enchantment: Juggernaut",
+"Enchantment: Cinderhulk",
+"Enchantment: Devourer"
+];
+
 // Available colors
 // Pulled from https://www.google.com/design/spec/style/color.html#color-color-palette
 var colorList = [
@@ -20,7 +101,7 @@ var colorList = [
 // Number of colors in use
 var colorCount = 0;
 // Keeps track of item colors
-var colorMap = {};
+var colorMap = {"Other" : "#757575"};
 // Keeps track of current items and corresponding class names
 var currentItems = {};
 // Keeps track of new items (following a graph update) to compare against old ('current') items
@@ -29,72 +110,35 @@ var newItems = {};
 var filteredItems = {};
 // Keeps track of patch to show data for
 var patch = '5.14';
-
-/*
-TODO replace with an updateData/getData function that takes new data from database
-and formats it before handing off to graph.
-make sure it clears filteredItems
-*/
-var randomizeData = function() {
-  for (var barIndex in sampleData) {
-    if (sampleData.hasOwnProperty(barIndex)) {
-      var bar = sampleData[barIndex];
-      for (var item in bar) {
-        if (bar.hasOwnProperty(item)) {
-          if (Math.random() > .8)
-            bar[item] = 0;
-          else
-            bar[item] = 20 + 40 * Math.random();
-        }
-      }
-    }
-  }
-  updateGraph(sampleData);
-};
+// Holds the data
+var data = [];
 
 /**
  * Updates graph based on new data
- * @param {object} barData - new graph data
+ * @param {object} data - new graph data
  */
-var updateGraph = function(barData) {
-  // Process new data
+var updateGraph = function() {
+  var barData = (patch == '5.11' ? data[0] : data[1]).matchItemData;
+
+  // Reset new items map
   newItems = {};
-  removedItems = {};
 
   // Keep track of total number of data points for each bar
-  var totals = [];
-
-  // Loop through each bar in barData object
+  var totals = [0, 0, 0, 0, 0, 0];
 
   barData.forEach(function(bar, barIndex) {
-    totals[barIndex] = 0;
-
-    // Loop through each item in bar
     for (var item in bar) {
       totals[barIndex] += bar[item];
 
       // Process item the first time we see it
       if(!newItems[item]) {
-        // Map item to its class name (to be used by associated DOM elements)
+        // Create and save class name
         newItems[item] = item.replace(/\s|'|\(|\)|:/g, "");
 
-        // Check to see if item was in old graph
-        // Assign color and create new legend section if not
-        if (!currentItems[item]) {
-          var color;
-          if (item == "Other")
-            color = "#757575" // Grey
-          else {
-            color = colorList[colorCount];
-            colorCount = (colorCount + 1)%colorList.length;
-          }
-
-          // Save color for this item in map
-          colorMap[item] = color;
-
-          // Create and add section to legend
-          var $section = createLegendSection(item, newItems[item]);
-          var legend = $('#legend').append($section);
+        // Assign color if needed
+        if (!colorMap[item]) {
+          colorCount = (colorCount + 1)%colorList.length;
+          colorMap[item] = colorList[colorCount];
         }
       }
     }
@@ -105,26 +149,58 @@ var updateGraph = function(barData) {
   var graph = $('#graph');
   barData.forEach(function(bar, barIndex) {
     var barElement = $('#graph').find('#bar-' + barIndex);
-
+    var otherCount = 0;
     // Update/add bar sections
     for (var item in bar) {
       var percent = bar[item] / totals[barIndex];
 
+      // If less than 4%, group with Other
+      if (percent < .03) {
+        otherCount += bar[item];
+        percent = 0;
+      }
+
       // Update section if it already exists
-      if (barElement.find('.' + newItems[item]).length)
-        barElement.find('.' + newItems[item]).height((percent * 100) + '%');
-      // Create new section otherwise
-      else
-        barElement.prepend(createItemSection(item, newItems[item], percent));
+      $barSectionElement = barElement.find('.' + newItems[item]);
+      if ($barSectionElement.length) {
+        $barSectionElement.unbind('webkitTransitionEnd transitionend msTransitionEnd oTransitionEnd')
+        $barSectionElement.height((percent * 100) + '%');
+      }
+
+      // Otherwise, create new bar and legend sections
+      else if (percent > 0) {
+        addItemSection(item, newItems[item], percent, barElement);
+        if (!$('#legend').find('.' + newItems[item]).length)
+          addLegendSection(item, newItems[item], $('#legend'));
+      }
     }
+
+    $otherSectionElement = barElement.find('.Other');
+    percent = otherCount / totals[barIndex];
+    if ($otherSectionElement.length) {
+      $otherSectionElement.unbind('webkitTransitionEnd transitionend msTransitionEnd oTransitionEnd')
+      $otherSectionElement.parent().prepend($otherSectionElement[0]);
+      $otherSectionElement.height((percent * 100) + '%');
+
+    }
+
+    // Otherwise, create new bar and legend sections
+    else {
+      addItemSection('Other', 'Other', percent, barElement);
+      if (!$('#legend').find('.Other').length)
+        addLegendSection('Other', 'Other', $('#legend'));
+    }
+
   });
 
   // Remove bar and legend sections for
   // items that are no longer present (following a graph update)
   for (var item in currentItems) {
     if (!newItems.hasOwnProperty(item)) {
-      $('.graph-bar .' + currentItems[removedItem]).height(0);
-      $('#legend .' + currentItems[removedItem]).remove();
+      $('.graph-bar .' + currentItems[item]).bind('webkitTransitionEnd transitionend msTransitionEnd oTransitionEnd', function() {
+        $('#legend .' + this.classList[1]).remove();
+        $(this).remove();
+      }).height(0);
     }
   }
 
@@ -139,12 +215,13 @@ var updateGraph = function(barData) {
  * @param {string} itemName - full name of item
  * @param {string} className - class name for DOM element
  * @param {number} percent - percent of bar height new section should take
+ * @param {jQueryObject} parent - element to add new section to
  * @returns {jQueryObject} graph bar section
  */
-var createItemSection = function(itemName, className, percent) {
+var addItemSection = function(itemName, className, percent, parent) {
   // Create outer element
   var $outer = $('<div>', {class: "graph-bar-section " + className});
-  $outer.height((percent * 100) + '%');
+  $outer.height(0);
 
   // Create inner element
   var $inner = $('<div>', {class: "graph-bar-section-inner"});
@@ -163,7 +240,11 @@ var createItemSection = function(itemName, className, percent) {
   });
 
   $outer.append($inner);
-  return $outer;
+  parent.prepend($outer);
+
+  // flush the style so it animates properly
+  window.getComputedStyle($outer[0]).height;
+  $outer.height((percent * 100) + '%');
 };
 
 
@@ -172,11 +253,13 @@ var createItemSection = function(itemName, className, percent) {
  *
  * @param {string} itemName - full name of item
  * @param {string} className - class name for DOM element
+ * @param {jQueryObject} parent - element to add new section to
  * @returns {jQueryObject} legend section
  */
-var createLegendSection = function(itemName, className) {
+var addLegendSection = function(itemName, className, parent) {
   // Create section element
   var $section = $('<div>', {class: "legend-section " + className});
+  $section.css({'opacity': 0});
 
   // Add event handlers
   $section.hover(function() {
@@ -203,7 +286,11 @@ var createLegendSection = function(itemName, className) {
   $text.html(itemName);
 
   $section.append($swatch).append($image).append($text);
-  return $section;
+  parent.append($section);
+
+  // Fade in new sections
+  window.getComputedStyle($section[0]).opacity;
+  $section.css({'opacity': 1});
 };
 
 /**
@@ -212,8 +299,12 @@ var createLegendSection = function(itemName, className) {
  * @param {string} color - background color
  * @returns {string} text color
  */
-var getTextColor = function(color){
-  return (parseInt(color.replace('#',''), 16) > 0xffffff/2) ? 'black':'white';
+var getTextColor = function(color) {
+ 	var r = parseInt(color.substr(1,2),16);
+ 	var g = parseInt(color.substr(3,2),16);
+ 	var b = parseInt(color.substr(5,2),16);
+ 	var yiq = ((r*299)+(g*587)+(b*114))/1000;
+ 	return (yiq >= 158) ? 'black' : 'white';
 };
 
 $(window).load(function() {
@@ -232,10 +323,14 @@ $(window).load(function() {
     patch = position == 'first' ? '5.11' : '5.14';
 
     // TODO replace with updateData/getData
-    randomizeData();
+    updateGraph();
 
   });
-  $.get('/data', function(data) {
-    updateGraph(data.matchItemData);
+  $.get('/data/5.14', function(data2) {
+    data[1] = data2;
+    updateGraph();
+    $.get('/data/5.11', function(data1) {
+      data[0] = data1;
+    });
   });
 });
