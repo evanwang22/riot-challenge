@@ -148,7 +148,7 @@ var data = [];
  * @param {object} data - new graph data
  */
 var updateGraph = function() {
-  var barData = (patch == '5.11' ? data[0] : data[1]).matchItemData;
+  var barData = (patch == '5.11' ? data[0] : data[1]);
 
   // Reset new items map
   newItems = {};
@@ -406,11 +406,9 @@ $(window).load(function() {
     updateGraph();
 
   });
-  $.get('/data/5.14', function(data2) {
-    data[1] = data2;
+  $.get('/data', function(matchData) {
+    data[1] = matchData.matchItemData511;
+    data[0] = matchData.matchItemData514;
     updateGraph();
-    $.get('/data/5.11', function(data1) {
-      data[0] = data1;
-    });
   });
 });

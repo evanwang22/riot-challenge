@@ -8,48 +8,17 @@ router.get('/', function(req, res, next) {
 });
 
 /* GET data for all items, async */
-/* TODO Fix this so data returns both 5.11 and 5.14 data together? */
-router.get('/data/5.11', function(req, res, next) {
-  var matchData = db.get('match_data');
-  matchData.find({}, function(err, docs){
-    var items = [{}, {}, {}, {}, {}, {}];
-    items.forEach(function(itemSlot, slotIndex){
-      docs.forEach(function(doc){
-        for (var player in doc) {
-          if (doc[player].items && doc[player].items[slotIndex]) {
-            var boughtItem = doc[player].items[slotIndex];
-            if (itemSlot[boughtItem]) {
-              itemSlot[boughtItem] += 1;
-            } else {
-              itemSlot[boughtItem] = 1;
-            }
-          }
-        }
-      });
-    });
-    res.json({ matchItemData: items });
-  });
-});
+router.get('/data', function(req, res, next) {
+  var matchData511 = db.get('match_data');
+  var matchData514 = db.get('match_data2');
 
-router.get('/data/5.14', function(req, res, next) {
-  var matchData = db.get('match_data2');
-  matchData.find({}, function(err, docs){
-    var items = [{}, {}, {}, {}, {}, {}];
-    items.forEach(function(itemSlot, slotIndex){
-      docs.forEach(function(doc){
-        for (var player in doc) {
-          if (doc[player].items && doc[player].items[slotIndex]) {
-            var boughtItem = doc[player].items[slotIndex];
-            if (itemSlot[boughtItem]) {
-              itemSlot[boughtItem] += 1;
-            } else {
-              itemSlot[boughtItem] = 1;
-            }
-          }
-        }
-      });
+  var promises = [matchData511.find({}), matchData514.find({})];
+
+  Promise.all(promises).then(function(values){
+    var data = values.map(function(docs){
+      return buildItemData(docs);
     });
-    res.json({ matchItemData: items });
+    res.json({ matchItemData511: data[0], matchItemData514: data[1] });
   });
 });
 
@@ -63,5 +32,24 @@ router.get('/singleItemData', function(req, res, next) {
     res.status(400).json({'error':'Bad request'});
   }
 });
+
+var buildItemData = function(docs){
+  var items = [{}, {}, {}, {}, {}, {}];
+  items.forEach(function(itemSlot, slotIndex){
+    docs.forEach(function(doc){
+      for (var player in doc) {
+        if (doc[player].items && doc[player].items[slotIndex]) {
+          var boughtItem = doc[player].items[slotIndex];
+          if (itemSlot[boughtItem]) {
+            itemSlot[boughtItem] += 1;
+          } else {
+            itemSlot[boughtItem] = 1;
+          }
+        }
+      }
+    });
+  });
+  return items;
+};
 
 module.exports = router;
