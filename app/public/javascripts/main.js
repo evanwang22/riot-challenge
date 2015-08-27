@@ -1,83 +1,85 @@
-var itemList = [
-"Abyssal Scepter",
-"Archangel's Staff",
-"Ardent Censer",
-"Athene's Unholy Grail",
-"Banner of Command",
-"Banshee's Veil",
-"Blade of the Ruined King",
-"The Black Cleaver",
-"The Bloodthirster",
-"Dead Man's Plate",
-"Essence Reaver",
-"Face of the Mountain",
-"Frost Queen's Claim",
-"Frozen Heart",
-"Frozen Mallet",
-"Guardian Angel",
-"Guinsoo's Rageblade",
-"Hextech Gunblade",
-"Iceborn Gauntlet",
-"Infinity Edge",
-"Last Whisper",
-"Liandry's Torment",
-"Lich Bane",
-"Locket of the Iron Solari",
-"Luden's Echo",
-"Manamune",
-"Maw of Malmortius",
-"Mejai's Soulstealer",
-"Mercurial Scimitar",
-"Mikael's Crucible",
-"Morellonomicon",
-"Nashor's Tooth",
-"Ohmwrecker",
-"Phantom Dancer",
-"Rabadon's Deathcap",
-"Randuin's Omen",
-"Ravenous Hydra (Melee Only)",
-"Righteous Glory",
-"Rod of Ages",
-"Runaan's Hurricane (Ranged Only)",
-"Rylai's Crystal Scepter",
-"Sightstone",
-"Spirit Visage",
-"Statikk Shiv",
-"Sterak's Gage",
-"Sunfire Cape",
-"Sword of the Occult",
-"Talisman of Ascension",
-"Thornmail",
-"Titanic Hydra",
-"Trinity Force",
-"Twin Shadows",
-"Void Staff",
-"Warmog's Armor",
-"Will of the Ancients",
-"Wit's End",
-"Youmuu's Ghostblade",
-"Zeke's Harbinger",
-"Zeke's Herald",
-"Zephyr",
-"Zhonya's Hourglass",
-"Zz'Rot Portal",
+var itemTypeMap = {
+"Abyssal Scepter" : "AP",
+"Archangel's Staff" : "AP",
+"Ardent Censer" : "AP",
+"Athene's Unholy Grail" : "AP",
+"Banner of Command" : "AP",
+"Banshee's Veil" : "Tank",
+"Blade of the Ruined King" : "AD",
+"The Black Cleaver" : "AD",
+"The Bloodthirster" : "AD",
+"Dead Man's Plate" : "Tank",
+"Essence Reaver" : "AD",
+"Face of the Mountain" : "Tank",
+"Frost Queen's Claim" : "AP",
+"Frozen Heart" : "Tank",
+"Frozen Mallet" : "Tank",
+"Guardian Angel" : "Tank",
+"Guinsoo's Rageblade" : "Miscellaneous",
+"Hextech Gunblade" : "Miscellaneous",
+"Iceborn Gauntlet" : "Tank",
+"Infinity Edge" : "AD",
+"Last Whisper" : "AD",
+"Liandry's Torment" : "AP",
+"Lich Bane" : "AP",
+"Locket of the Iron Solari" : "Tank",
+"Luden's Echo" : "AP",
+"Manamune" : "AD",
+"Maw of Malmortius" : "AD",
+"Mejai's Soulstealer" : "AP",
+"Mercurial Scimitar" : "AD",
+"Mikael's Crucible" : "Miscellaneous",
+"Morellonomicon" : "AP",
+"Nashor's Tooth" : "AP",
+"Ohmwrecker" : "Tank",
+"Phantom Dancer" : "AD",
+"Rabadon's Deathcap" : "AP",
+"Randuin's Omen" : "Tank",
+"Ravenous Hydra (Melee Only)" : "AD",
+"Righteous Glory" : "Tank",
+"Rod of Ages" : "AP",
+"Runaan's Hurricane (Ranged Only)" : "AD",
+"Rylai's Crystal Scepter" : "AP",
+"Sightstone" : "Miscellaneous",
+"Spirit Visage" : "Tank",
+"Statikk Shiv" : "AD",
+"Sterak's Gage" : "Tank",
+"Sunfire Cape" : "Tank",
+"Sword of the Occult" : "AD",
+"Talisman of Ascension" : "Miscellaneous",
+"Thornmail" : "Tank",
+"Titanic Hydra" : "Tank",
+"Trinity Force" : "AD",
+"Twin Shadows" : "AP",
+"Void Staff" : "AP",
+"Warmog's Armor" : "Tank",
+"Will of the Ancients" : "AP",
+"Wit's End" : "Miscellaneous",
+"Youmuu's Ghostblade" : "AD",
+"Zeke's Harbinger" : "Miscellaneous",
+"Zeke's Herald" : "Miscellaneous",
+"Zephyr" : "AD",
+"Zhonya's Hourglass" : "AP",
+"Zz'Rot Portal" : "Tank",
 
-"Boots of Swiftness",
-"Mercury's Treads",
-"Sorcerer's Shoes",
-"Boots of Mobility",
-"Berserker's Greaves",
-"Ionian Boots of Lucidity",
+"Boots of Swiftness" : "Miscellaneous",
+"Mercury's Treads" : "Miscellaneous",
+"Sorcerer's Shoes" : "Miscellaneous",
+"Boots of Mobility" : "Miscellaneous",
+"Berserker's Greaves" : "Miscellaneous",
+"Ionian Boots of Lucidity" : "Miscellaneous",
 
-"Perfect Hex Core",
+"Perfect Hex Core" : "AP",
 
-"Enchantment: Warrior",
-"Enchantment: Magus",
-"Enchantment: Runeglaive",
-"Enchantment: Juggernaut",
-"Enchantment: Cinderhulk",
-"Enchantment: Devourer"
-];
+"Enchantment: Warrior" : "AD",
+"Enchantment: Magus" : "AP",
+"Enchantment: Runeglaive" : "AP",
+"Enchantment: Juggernaut" : "Tank",
+"Enchantment: Cinderhulk" : "Tank",
+"Enchantment: Devourer" : "Miscellaneous",
+
+"Other" : "Other"
+};
 
 // Available colors
 // Pulled from https://www.google.com/design/spec/style/color.html#color-color-palette
@@ -98,10 +100,38 @@ var colorList = [
   "#9C27B0", // Purple
   "#673AB7" // Deep Purple
 ];
+
+var colorMap = {
+  // "AP" : "#173C79",
+  // "AD" : "#94724D",
+  // "Tank" : "#195657",
+  // "Miscellaneous" : "#332B50",
+
+  // "Other" : "#444444"
+  // "AP" : "#2D4CA0",
+  // "AD" : "#EE4B2D",
+  // "Tank" : "#21AE51",
+  // "Miscellaneous" : "#EEB02D",
+  // "Other" : "#444444"
+
+  "AP" : "#1E88E5",
+  "AD" : "#F4511E",
+  "Tank" : "#43A047",
+  "Miscellaneous" : "#5E35B1",
+  "Other" : "#dddddd"
+
+  // "AP" : "#3C6579",
+  // "AD" : "#3C6579",
+  // "Tank" : "#3C6579",
+  // "Miscellaneous" : "#3C6579",
+  // "Other" : "#eeeeee"
+
+
+}
 // Number of colors in use
 var colorCount = 0;
 // Keeps track of item colors
-var colorMap = {"Other" : "#757575"};
+//var colorMap = {"Other" : "#757575"};
 // Keeps track of current items and corresponding class names
 var currentItems = {};
 // Keeps track of new items (following a graph update) to compare against old ('current') items
@@ -136,10 +166,10 @@ var updateGraph = function() {
         newItems[item] = item.replace(/\s|'|\(|\)|:/g, "");
 
         // Assign color if needed
-        if (!colorMap[item]) {
-          colorCount = (colorCount + 1)%colorList.length;
-          colorMap[item] = colorList[colorCount];
-        }
+        // if (!colorMap[item]) {
+        //   colorCount = (colorCount + 1)%colorList.length;
+        //   colorMap[item] = colorList[colorCount];
+        // }
       }
     }
   });
@@ -148,10 +178,22 @@ var updateGraph = function() {
   // Needed totals to properly size sections
   var graph = $('#graph');
   barData.forEach(function(bar, barIndex) {
+    var keys = Object.keys(bar);
+    var sortedKeys = keys.sort(function(a, b) {
+      if (bar[a] < bar[b])
+        return 1;
+      if (bar[a] > bar[b])
+        return -1;
+      return 0;
+    });
+
+
+
     var barElement = $('#graph').find('#bar-' + barIndex);
     var otherCount = 0;
     // Update/add bar sections
-    for (var item in bar) {
+    for (var i = 0; i < sortedKeys.length; i++) {
+      var item = sortedKeys[i];
       var percent = bar[item] / totals[barIndex];
 
       // If less than 4%, group with Other
@@ -165,6 +207,8 @@ var updateGraph = function() {
       if ($barSectionElement.length) {
         $barSectionElement.unbind('webkitTransitionEnd transitionend msTransitionEnd oTransitionEnd')
         $barSectionElement.height((percent * 100) + '%');
+        $barSectionElement.find('.graph-bar-section-inner').css({'border-color': percent ? colorMap[itemTypeMap[item]] : '#ffffff',
+                                                                 'background-color': percent ? colorMap[itemTypeMap[item]] : '#ffffff'});
       }
 
       // Otherwise, create new bar and legend sections
@@ -178,10 +222,8 @@ var updateGraph = function() {
     $otherSectionElement = barElement.find('.Other');
     percent = otherCount / totals[barIndex];
     if ($otherSectionElement.length) {
-      $otherSectionElement.unbind('webkitTransitionEnd transitionend msTransitionEnd oTransitionEnd')
       $otherSectionElement.parent().prepend($otherSectionElement[0]);
       $otherSectionElement.height((percent * 100) + '%');
-
     }
 
     // Otherwise, create new bar and legend sections
@@ -225,18 +267,18 @@ var addItemSection = function(itemName, className, percent, parent) {
 
   // Create inner element
   var $inner = $('<div>', {class: "graph-bar-section-inner"});
-  $inner.css('background-color', colorMap[itemName]);
+  $inner.css('background-color', colorMap[itemTypeMap[itemName]]);
+  $inner.css('border-color', colorMap[itemTypeMap[itemName]]);
 
+
+  var color = colorMap[itemTypeMap[itemName]];
   // Add event handlers
-  $inner.hover(function() {
-    $('#graph .' + className + ' .graph-bar-section-inner').toggleClass('focus');
-    $('.legend-section.' + className).css({'background-color': colorMap[itemName], 'color': getTextColor(colorMap[itemName])});
-  }, function() {
-    $('#graph .' + className + ' .graph-bar-section-inner').toggleClass('focus');
-    $('.legend-section.' + className).css({'background-color': 'none', 'color': getTextColor('#FFFFFF')});
-  });
+  $inner.hover(
+    function() {focusItem(className, color)},
+    function() {unfocusItem(className, color)}
+  );
   $inner.click(function() {
-    // TODO open popup for locking/unlocking item
+    lockItem($(this), className, color);
   });
 
   $outer.append($inner);
@@ -258,39 +300,77 @@ var addItemSection = function(itemName, className, percent, parent) {
  */
 var addLegendSection = function(itemName, className, parent) {
   // Create section element
-  var $section = $('<div>', {class: "legend-section " + className});
+  var $section = $('<div>', {class: "legend-section"});
   $section.css({'opacity': 0});
 
+
+  var color = colorMap[itemTypeMap[itemName]];
   // Add event handlers
-  $section.hover(function() {
-    $('#graph .' + className + ' .graph-bar-section-inner').toggleClass('focus');
-    $(this).css({'background-color': colorMap[itemName], 'color': getTextColor(colorMap[itemName])});
-  }, function() {
-    $('#graph .' + className + ' .graph-bar-section-inner').toggleClass('focus');
-    $(this).css({'background-color': 'none', 'color': getTextColor('#FFFFFF')});
-  });
+  $section.hover(
+    function() {focusItem(className, color)},
+    function() {unfocusItem(className, color)}
+  );
   $section.click(function() {
-    // TODO open popup for filtering out item
+    lockItem($(this).find('.legend-section-text'), className, color);
   });
 
   // Create swatch element
-  var $swatch = $('<div>', {class: "legend-section-swatch"});
-  $swatch.css('background-color', colorMap[itemName]);
+  // var $swatch = $('<div>', {class: "legend-section-swatch"});
+  // $swatch.css('background-color', colorMap[itemTypeMap[itemName]]);
 
   // Create image element
   var $image = $('<div>', {class: "legend-section-image"});
   $image.css('background-image', "url('images/items/" + className + ".png')");
 
   // Create text element
-  var $text = $('<div>', {class: "legend-section-text"});
+  var $text = $('<div>', {class: "legend-section-text " + className});
   $text.html(itemName);
 
-  $section.append($swatch).append($image).append($text);
+  $section.append($image).append($text);
   parent.append($section);
 
   // Fade in new sections
   window.getComputedStyle($section[0]).opacity;
   $section.css({'opacity': 1});
+};
+
+var focusItem = function(className, color) {
+  $('#graph .' + className + ' .graph-bar-section-inner').addClass('focused');
+
+  var legendSectionText = $('.legend-section-text.' + className);
+  legendSectionText.addClass('focused').css({'background-color': color, 'color': getTextColor(color)});
+
+  if (!legendSectionText.hasClass('locked'))
+    legendSectionText.css({'border-color': color});
+};
+
+var unfocusItem = function(className, color) {
+  $('#graph .' + className + ' .graph-bar-section-inner').removeClass('focused');
+
+  var legendSectionText = $('.legend-section-text.' + className);
+  legendSectionText.removeClass('focused').css({'background-color': 'none', 'color': getTextColor('#ffffff')});
+
+  if (!legendSectionText.hasClass('locked'))
+    legendSectionText.css({'border-color': '#ffffff'});
+};
+
+var lockItem = function(elem, className, color) {
+  var locked = elem.hasClass('locked');
+
+  $('#graph .locked').removeClass('locked');
+  $('#legend .locked').each(function() {
+    if (!$(this).hasClass('focused'))
+      $(this).css({'border-color': '#ffffff'});
+  });
+  $('#legend .locked').removeClass('locked');
+
+
+  if (!locked) {
+    $('#graph .' + className + ' .graph-bar-section-inner').addClass('locked');
+    $('#legend .' + className).addClass('locked');
+    $('#legend .' + className).css({'border-color': color});
+  }
+
 };
 
 /**

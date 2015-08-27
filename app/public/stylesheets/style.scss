@@ -181,31 +181,49 @@ body {
 
   .graph-bar-section {
     position: relative;
-    @include transition(height, 333ms);
+    @include transition(height 333ms);
   }
 
   .graph-bar-section-inner {
     position: absolute;
-    top: 2px;
-    left: 6px;
-    width: calc(100% - 12px);
-    height: calc(100% - 4px);
+    top: 5px;
+    left: 9px;
+    width: calc(100% - 18px);
+    height: calc(100% - 10px);
+
+    border: 3px solid;
 
     border-radius: 2px;
-    @include box-shadow(0 0 5px -1px $boxShadow);
-    @include transition(box-shadow 333ms);
+    @include box-shadow(none);
+    @include transition(box-shadow 333ms, opacity 333ms, background-color 333ms, border-color 333ms);
     cursor: pointer;
+    opacity: .75;
+
   }
 
-  .graph-bar-section-inner.focus {
+  .graph-bar-section-inner.focused {
+    opacity: 1;
+  }
+
+  .graph-bar-section-inner.focused:hover {
     @include box-shadow(0 0 4px 0px $boxShadow);
-    @include animation(barSectionPulse 1.5s infinite ease-in-out);
   }
 
-  .graph-bar-section-inner.focus:active {
-    @include box-shadow(0 0 5px -1px $boxShadow);
+  .graph-bar-section-inner.focused:active {
+    @include box-shadow(none);
   }
 
+  .graph-bar-section-inner.locked {
+    background-color: #fff !important;
+  }
+
+  .graph-bar-section-inner.locked:hover {
+    @include box-shadow(0 0 4px 0px $boxShadow, inset 0 0 4px 0px $boxShadow);
+  }
+
+  .graph-bar-section-inner.locked:active {
+    @include box-shadow(none);
+  }
 }
 
 ///// Info Row /////
@@ -277,7 +295,7 @@ body {
 
     cursor: pointer;
     @include disable-select();
-    @include transition(color 333ms, background-color 333ms, box-shadow 333ms, opacity 333ms);
+    @include transition(box-shadow 333ms, opacity 333ms);
 
     .legend-section-swatch {
       float: left;
@@ -296,16 +314,22 @@ body {
     }
     .legend-section-text {
       float: left;
-      width: calc(100% - 3 * #{$legendSize} / 2 - 18px); // subtract image, swatch, swatch margin, padding
-      height: 100%;
-      padding: 0 6px 0 6px;
+      width: calc(100% - 2 * #{$legendSize} / 2 - 12px); // subtract image, swatch, swatch margin, padding, border (swatch currently excluded)
+      height: calc(100% - 6px); // subtract border
+      padding: 0 3px;
 
-      line-height: #{$legendSize};
+      line-height: calc(#{$legendSize} - 6px); // subtract border
       font-size: calc(#{$legendSize} - 12px);
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
 
+      border: solid 3px $white;
+
+      @include transition(color 333ms, background-color 333ms, border-color 333ms);
+    }
+
+    .legend-section-text.locked {
     }
   }
 
@@ -370,23 +394,23 @@ body {
   }
 }
 
-@-webkit-keyframes barSectionPulse {
-  0%    { opacity: 1 }
-  50%   { opacity: .75 }
-  100%  { opacity: 1 }
-}
-@-moz-keyframes barSectionPulse {
-  0%    { opacity: 1 }
-  50%   { opacity: .75 }
-  100%  { opacity: 1 }
-}
-@-o-keyframes barSectionPulse {
-  0%    { opacity: 1 }
-  50%   { opacity: .75 }
-  100%  { opacity: 1 }
-}
-@keyframes barSectionPulse {
-  0%    { opacity: 1 }
-  50%   { opacity: .75 }
-  100%  { opacity: 1 }
-}
+// @-webkit-keyframes barSectionPulse {
+//   0%    { opacity: 1 }
+//   50%   { opacity: .75 }
+//   100%  { opacity: 1 }
+// }
+// @-moz-keyframes barSectionPulse {
+//   0%    { opacity: 1 }
+//   50%   { opacity: .75 }
+//   100%  { opacity: 1 }
+// }
+// @-o-keyframes barSectionPulse {
+//   0%    { opacity: 1 }
+//   50%   { opacity: .75 }
+//   100%  { opacity: 1 }
+// }
+// @keyframes barSectionPulse {
+//   0%    { opacity: 1 }
+//   50%   { opacity: .75 }
+//   100%  { opacity: 1 }
+// }

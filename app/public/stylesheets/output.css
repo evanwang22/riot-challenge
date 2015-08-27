@@ -134,37 +134,47 @@ body {
     height: 100%; }
   #graph-area .graph-bar-section {
     position: relative;
-    -webkit-transition: height, 333ms;
-    -moz-transition: height, 333ms;
-    -o-transition: height, 333ms;
-    transition: height, 333ms; }
+    -webkit-transition: height 333ms;
+    -moz-transition: height 333ms;
+    -o-transition: height 333ms;
+    transition: height 333ms; }
   #graph-area .graph-bar-section-inner {
     position: absolute;
-    top: 2px;
-    left: 6px;
-    width: calc(100% - 12px);
-    height: calc(100% - 4px);
+    top: 5px;
+    left: 9px;
+    width: calc(100% - 18px);
+    height: calc(100% - 10px);
+    border: 3px solid;
     border-radius: 2px;
-    -webkit-box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.75);
-    -moz-box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.75);
-    box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.75);
-    -webkit-transition: box-shadow 333ms;
-    -moz-transition: box-shadow 333ms;
-    -o-transition: box-shadow 333ms;
-    transition: box-shadow 333ms;
-    cursor: pointer; }
-  #graph-area .graph-bar-section-inner.focus {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    -webkit-transition: box-shadow 333ms, opacity 333ms, background-color 333ms, border-color 333ms;
+    -moz-transition: box-shadow 333ms, opacity 333ms, background-color 333ms, border-color 333ms;
+    -o-transition: box-shadow 333ms, opacity 333ms, background-color 333ms, border-color 333ms;
+    transition: box-shadow 333ms, opacity 333ms, background-color 333ms, border-color 333ms;
+    cursor: pointer;
+    opacity: .75; }
+  #graph-area .graph-bar-section-inner.focused {
+    opacity: 1; }
+  #graph-area .graph-bar-section-inner.focused:hover {
     -webkit-box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.75);
     -moz-box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.75);
-    box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.75);
-    -webkit-animation: barSectionPulse 1.5s infinite ease-in-out;
-    -moz-animation: barSectionPulse 1.5s infinite ease-in-out;
-    -o-animation: barSectionPulse 1.5s infinite ease-in-out;
-    animation: barSectionPulse 1.5s infinite ease-in-out; }
-  #graph-area .graph-bar-section-inner.focus:active {
-    -webkit-box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.75);
-    -moz-box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.75);
-    box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.75); }
+    box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.75); }
+  #graph-area .graph-bar-section-inner.focused:active {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none; }
+  #graph-area .graph-bar-section-inner.locked {
+    background-color: #fff !important; }
+  #graph-area .graph-bar-section-inner.locked:hover {
+    -webkit-box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.75), inset 0 0 4px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.75), inset 0 0 4px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.75), inset 0 0 4px 0px rgba(0, 0, 0, 0.75); }
+  #graph-area .graph-bar-section-inner.locked:active {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none; }
 
 #container-info {
   float: left;
@@ -222,10 +232,10 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    -webkit-transition: color 333ms, background-color 333ms, box-shadow 333ms, opacity 333ms;
-    -moz-transition: color 333ms, background-color 333ms, box-shadow 333ms, opacity 333ms;
-    -o-transition: color 333ms, background-color 333ms, box-shadow 333ms, opacity 333ms;
-    transition: color 333ms, background-color 333ms, box-shadow 333ms, opacity 333ms; }
+    -webkit-transition: box-shadow 333ms, opacity 333ms;
+    -moz-transition: box-shadow 333ms, opacity 333ms;
+    -o-transition: box-shadow 333ms, opacity 333ms;
+    transition: box-shadow 333ms, opacity 333ms; }
     #legend .legend-section .legend-section-swatch {
       float: left;
       width: calc(28px / 2);
@@ -239,14 +249,19 @@ body {
       background-color: #424242; }
     #legend .legend-section .legend-section-text {
       float: left;
-      width: calc(100% - 3 * 28px / 2 - 18px);
-      height: 100%;
-      padding: 0 6px 0 6px;
-      line-height: 28px;
+      width: calc(100% - 2 * 28px / 2 - 12px);
+      height: calc(100% - 6px);
+      padding: 0 3px;
+      line-height: calc(28px - 6px);
       font-size: calc(28px - 12px);
       overflow: hidden;
       white-space: nowrap;
-      text-overflow: ellipsis; }
+      text-overflow: ellipsis;
+      border: solid 3px white;
+      -webkit-transition: color 333ms, background-color 333ms, border-color 333ms;
+      -moz-transition: color 333ms, background-color 333ms, border-color 333ms;
+      -o-transition: color 333ms, background-color 333ms, border-color 333ms;
+      transition: color 333ms, background-color 333ms, border-color 333ms; }
   #legend .legend-section:hover {
     -webkit-box-shadow: 0 0 3px 0px rgba(0, 0, 0, 0.75);
     -moz-box-shadow: 0 0 3px 0px rgba(0, 0, 0, 0.75);
@@ -292,43 +307,3 @@ body {
     -moz-transition: left 333ms;
     -o-transition: left 333ms;
     transition: left 333ms; }
-
-@-webkit-keyframes barSectionPulse {
-  0% {
-    opacity: 1; }
-
-  50% {
-    opacity: 0.75; }
-
-  100% {
-    opacity: 1; } }
-
-@-moz-keyframes barSectionPulse {
-  0% {
-    opacity: 1; }
-
-  50% {
-    opacity: 0.75; }
-
-  100% {
-    opacity: 1; } }
-
-@-o-keyframes barSectionPulse {
-  0% {
-    opacity: 1; }
-
-  50% {
-    opacity: 0.75; }
-
-  100% {
-    opacity: 1; } }
-
-@keyframes barSectionPulse {
-  0% {
-    opacity: 1; }
-
-  50% {
-    opacity: 0.75; }
-
-  100% {
-    opacity: 1; } }
