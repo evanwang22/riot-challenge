@@ -174,11 +174,13 @@ def seed(match_ids):
                     if item_name in item_list and item_name not in data_object['items']:
                         data_object['items'].append(item_name);
 
+            player_data_list = [ data_object for data_object in data_object_map.values() ]
+
             client = MongoClient()
             db = client['riot_challenge']
 
             match_data = db['match_data']
-            match_data.insert_one(data_object_map)
+            match_data.insert_one({ 'players': player_data_list })
         except KeyError:
             print "Unexpected error:", sys.exc_info()[0]
 
