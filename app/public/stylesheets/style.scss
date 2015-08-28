@@ -205,11 +205,20 @@ body {
     opacity: 1;
   }
 
-  .graph-bar-section-inner.focused:hover {
+  .graph-bar-section-inner-shadow {
+    width: 100%;
+    height: 100%;
+    margin: -3px 0 0 -3px;
+    border: 3px solid $transparent;
+
+    @include transition(box-shadow 333ms);
+  }
+
+  .graph-bar-section-inner-shadow.focused:hover {
     @include box-shadow(0 0 4px 0px $boxShadow);
   }
 
-  .graph-bar-section-inner.focused:active {
+  .graph-bar-section-inner-shadow.focused:active {
     @include box-shadow(none);
   }
 
@@ -217,11 +226,11 @@ body {
     background-color: #fff !important;
   }
 
-  .graph-bar-section-inner.locked:hover {
+  .graph-bar-section-inner-shadow.locked:hover {
     @include box-shadow(0 0 2px 0px $boxShadow, inset 0 0 2px 0px $boxShadow);
   }
 
-  .graph-bar-section-inner.locked:active {
+  .graph-bar-section-inner-shadow.locked:active {
     @include box-shadow(none);
   }
 }
@@ -452,4 +461,64 @@ body {
     @include transition(left 333ms);
 
   }
+}
+
+.tooltip {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 108px;
+  height: 28px;
+  z-index: 1;
+
+
+  border-radius: 2px;
+  background-color: $grey400;
+
+  overflow: hidden;
+  @include box-shadow(0 0 3px 0px $boxShadow);
+  @include transition(box-shadow 333ms, background-color 333ms);
+
+  .tooltip-image {
+    float: left;
+    width: 28px;
+    height: 28px;
+    // border-top-left-radius: 2px;
+    // border-bottom-left-radius: 2px;
+
+
+    background-size: cover;
+    background-color: $grey300;
+  }
+
+  .tooltip-text {
+    float: left;
+    width: 50px;
+    margin-left: 2px;
+
+    color: $white;
+    line-height: 28px;
+    font-size: 16px;
+    text-align: center;
+
+  }
+
+  .tooltip-lock {
+    float: left;
+    width: 28px;
+
+    color: $white;
+    line-height: 28px;
+    font-size: 16px;
+    text-align: center;
+  }
+
+}
+
+.tooltip:hover {
+  background-color: $grey600;
+}
+
+.tooltip:active {
+  @include box-shadow(none);
 }

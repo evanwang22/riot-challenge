@@ -144,6 +144,8 @@ var colorCount = 0;
 var legendItems = [];
 // Keeps track of new items (following a graph update) to compare against old ('current') items
 var newItems;
+// Keeps track of permanently locked items
+var lockedBars = [null, null, null, null, null, null];
 // Keeps track of patch to show data for
 var patch = '5.14';
 // Holds the data
@@ -153,8 +155,12 @@ var categoryMap = {'AP' : true,
                    'AD' : false,
                    'Tank' : false,
                    'Miscellaneous' : false};
+// Order to display categories in
 var categoryOrder = ['AP', 'AD', 'Tank', 'Miscellaneous'];
-
+// Timer for tooltip delays
+var tooltipTimer;
+// Tracking variable for tooltip delay
+var hover = false;
 /**
  * Updates graph based on new data
  * @param {object} data - new graph data
@@ -216,15 +222,21 @@ var updateGraph = function() {
 
       // Update section if it already exists
       $barSectionElement = barElement.find('.' + classNameMap[item]);
-      if (!$barSectionElement.length)
+      if (!$barSectionElement.length) {
         $barSectionElement = addItemSection(item, percent, barElement);
+      }
       else
         $barSectionElement.height((percent * 100) + '%');
 
       $barSectionElement.find('.graph-bar-section-inner').css({'border-color': percent ? colorMap[itemCategoryMap[item]] : '#ffffff',
                                                                  'background-color': percent ? colorMap[itemCategoryMap[item]] : '#ffffff'});
 
+
       if (percent > 0) {
+        // Check for locked bar item
+        if (lockedBars[barIndex] && lockedBars[barIndex] == item)
+          $barSectionElement.find('.graph-bar-section-inner').addClass('permanent');
+
         if (newItems.indexOf(item) == -1)
           newItems.push(item);
       }
@@ -234,6 +246,8 @@ var updateGraph = function() {
     if ($otherSectionElement.length) {
       $otherSectionElement.parent().prepend($otherSectionElement[0]);
       $otherSectionElement.height((otherPercent * 100) + '%');
+      $otherSectionElement.find('.graph-bar-section-inner').css({'border-color': otherPercent ? colorMap[itemCategoryMap['Other']] : '#ffffff',
+                                                                 'background-color': otherPercent ? colorMap[itemCategoryMap['Other']] : '#ffffff'});
     }
 
     // Otherwise, create new bar and legend sections
@@ -289,12 +303,22 @@ var addItemSection = function(itemName, percent, parent) {
   $inner.css('background-color', colorMap[itemCategoryMap[itemName]]);
   $inner.css('border-color', colorMap[itemCategoryMap[itemName]]);
 
+  var $innerShadow = $('<div>', {class: "graph-bar-section-inner-shadow"});
+  $inner.append($innerShadow);
 
   var color = colorMap[itemCategoryMap[itemName]];
   // Add event handlers
   $inner.hover(
-    function() {focusItem(className, color)},
-    function() {unfocusItem(className, color)}
+    function() {
+      hover = true;
+      focusItem(className, color);
+      createTooltip($(this), itemName, percent);
+    },
+    function() {
+      hover = false;
+      unfocusItem(className);
+      removeTooltip($(this));
+    }
   );
   $inner.click(function() {
     lockItem($(this), className, color);
@@ -353,10 +377,18 @@ var addLegendSection = function(itemName, parent) {
   // Fade in new sections
   window.getComputedStyle($section[0]).opacity;
   $section.css({'opacity': 1});
+  return $section;
 };
 
+/**
+ * Sets the focus on bar and legend sections with the given class name
+ *
+ * @param {string} className - class name to focus
+ * @param {string} color - color of focused items
+ */
 var focusItem = function(className, color) {
   $('#graph .' + className + ' .graph-bar-section-inner').addClass('focused');
+  $('#graph .' + className + ' .graph-bar-section-inner-shadow').addClass('focused');
 
   var legendSectionText = $('.legend-section-text.' + className);
   legendSectionText.addClass('focused').css({'background-color': color, 'color': getTextColor(color)});
@@ -365,8 +397,13 @@ var focusItem = function(className, color) {
     legendSectionText.css({'border-color': color});
 };
 
-var unfocusItem = function(className, color) {
-  $('#graph .' + className + ' .graph-bar-section-inner').removeClass('focused');
+/**
+ * Unsets the focus on bar and legend sections with the given class name
+ *
+ * @param {string} className - class name to unfocus
+ */
+var unfocusItem = function(className) {
+  $('#graph .' + className + ' .focused').removeClass('focused');
 
   var legendSectionText = $('.legend-section-text.' + className);
   legendSectionText.removeClass('focused').css({'background-color': 'none', 'color': getTextColor('#ffffff')});
@@ -375,6 +412,13 @@ var unfocusItem = function(className, color) {
     legendSectionText.css({'border-color': '#ffffff'});
 };
 
+/**
+ * Toggles the lock on bar and legend sections with the given class name
+ *
+ * @param {jQueryObject} elem - element triggering the lock
+ * @param {string} className - class name to lock
+ * @param {string} color - color of locked items
+ */
 var lockItem = function(elem, className, color) {
   var locked = elem.hasClass('locked');
 
@@ -388,18 +432,95 @@ var lockItem = function(elem, className, color) {
 
   if (!locked) {
     $('#graph .' + className + ' .graph-bar-section-inner').addClass('locked');
+    $('#graph .' + className + ' .graph-bar-section-inner-shadow').addClass('locked');
     $('#legend .' + className).addClass('locked');
     $('#legend .' + className).css({'border-color': color});
   }
 };
 
-var toggleCategory = function(element, category) {
-  element.toggleClass('visible');
+/**
+ * Toggles locking a single item into a bar slot
+ *
+ * @param {number} index - bar index to lock
+ * @param {string} itemName - name of item to lock into slot
+ */
+var lockBar = function(index, itemName, $tooltipLock) {
+  $('#bar-' + index).find('.permanent').removeClass('permanent');
+  lockedBars[index] = lockedBars[index] == itemName ? null : itemName;
+
+  if (lockedBars[index])
+    $tooltipLock.removeClass('fa-lock').addClass('fa-unlock-alt');
+  else
+    $tooltipLock.removeClass('fa-unlock-alt').addClass('fa-lock');
+
+
+  ///////////////////////////////////
+  // TODO get new data from server //
+  ///////////////////////////////////
+
+  updateGraph();
+};
+
+/**
+ * Toggles visibility for a given item category
+ *
+ * @param {jQueryObject} elem - element triggering the toggle
+ * @param {string} category - item category
+ */
+var toggleCategory = function(elem, category) {
+  elem.toggleClass('visible');
 
   categoryMap[category] = !categoryMap[category];
   updateGraph();
 };
 
+/**
+ * Creates tooltip on given element
+ *
+ * @param {jQueryObject} elem - element
+ * @param {string} itemName - full name of item
+ * @param {number} percent - percent of bar height item accounts for
+ */
+var createTooltip = function(elem, itemName, percent) {
+  var $tooltip = $('<div>', {class: "tooltip"});
+
+  var $tooltipImage = $('<div>', {class: "tooltip-image"});
+  $tooltipImage.css({'background-image' : "url('images/items/" + classNameMap[itemName] + ".png')"});
+
+  var $tooltipText = $('<div>', {class: "tooltip-text"});
+  $tooltipText.html((percent * 100).toFixed(1) + "%");
+
+  var $tooltipLock = $('<div>',
+    {class: "tooltip-lock fa " + (elem.hasClass('permanent') ? "fa-unlock-alt" : "fa-lock")});
+
+  var index = elem.parents('.graph-bar').attr('id').slice(-1);
+  $tooltip.click(function(event) { event.stopPropagation(); lockBar(index, itemName, $tooltipLock);});
+
+  $tooltip.append($tooltipImage);
+  $tooltip.append($tooltipText);
+  $tooltip.append($tooltipLock);
+
+  if (tooltipTimer) {
+    clearTimeout(tooltipTimer);
+    tooltipTimer = null
+  }
+  tooltipTimer = setTimeout(function() {
+    if (hover) {
+      $tooltip.hide();
+      elem.append($tooltip);
+      $tooltip.slideDown(200);
+    }
+  }, 500);
+};
+
+/**
+ * Removes tooltip on given element
+ *
+ * @param {jQueryObject} elem - element
+ */
+var removeTooltip = function(elem) {
+  elem.find('.tooltip').slideUp(100, function() {$(this).remove();});
+};
 
 /**
  * Returns text color for given background color
