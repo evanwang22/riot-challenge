@@ -197,7 +197,7 @@ body {
     @include box-shadow(none);
     @include transition(box-shadow 333ms, opacity 333ms, background-color 333ms, border-color 333ms);
     cursor: pointer;
-    opacity: .75;
+    opacity: .8;
 
   }
 
@@ -218,7 +218,7 @@ body {
   }
 
   .graph-bar-section-inner.locked:hover {
-    @include box-shadow(0 0 4px 0px $boxShadow, inset 0 0 4px 0px $boxShadow);
+    @include box-shadow(0 0 2px 0px $boxShadow, inset 0 0 2px 0px $boxShadow);
   }
 
   .graph-bar-section-inner.locked:active {
@@ -228,6 +228,7 @@ body {
 
 ///// Info Row /////
 #row-info {
+
 }
 
 #container-info {
@@ -240,7 +241,7 @@ body {
   position: relative;
   width: 80%;
   height: 100%;
-  margin: 12px auto 0 auto;
+  margin: 12px auto;
 
   border-top: solid 1px $darkDivider;
 }
@@ -270,7 +271,7 @@ body {
 #legend {
   float: left;
   width: calc(100% - 200px - #{$yAxisWidth});
-  //min-width: calc(.8 * 600px - #{$yAxisWidth});
+  min-height: 100px;
   margin-top: 4px;
   margin-left: $yAxisWidth;
 
@@ -310,7 +311,7 @@ body {
       height: 100%;
 
     	background-size: cover;
-      background-color: $grey800;
+      background-color: $grey300;
     }
     .legend-section-text {
       float: left;
@@ -339,6 +340,65 @@ body {
 
   .legend-section:active {
     @include box-shadow(none);
+  }
+}
+
+#category-selector {
+  float: right;
+  width: 196px;
+  height: 60px;
+  margin-top: 24px;
+
+  border-radius: 2px;
+
+  cursor: pointer;
+  @include disable-select();
+
+  .category-selector-section {
+    float: left;
+    position: relative;
+    width: 50%;
+    height: 50%;
+
+    color: $white;
+    font-size: 18px;
+    line-height: 30px;
+    text-align: center;
+
+    opacity: .8;
+    @include transition(opacity 333ms, box-shadow 333ms);
+  }
+
+  .category-selector-section.visible {
+    opacity: 1;
+  }
+
+  .category-selector-section:hover {
+    @include box-shadow(0 0 3px 0px $boxShadow);
+    z-index: 1;
+  }
+  .category-selector-section:active {
+    @include box-shadow(none);
+  }
+
+  #ap-selector-section {
+    background-color: #1E88E5;
+    border-top-left-radius: 2px;
+  }
+
+  #ad-selector-section {
+    background-color: #F4511E;
+    border-top-right-radius: 2px;
+  }
+
+  #tank-selector-section {
+    background-color: #43A047;
+    border-bottom-left-radius: 2px;
+  }
+
+  #misc-selector-section {
+    background-color: #5E35B1;
+    border-bottom-right-radius: 2px;
   }
 }
 
@@ -393,24 +453,3 @@ body {
 
   }
 }
-
-// @-webkit-keyframes barSectionPulse {
-//   0%    { opacity: 1 }
-//   50%   { opacity: .75 }
-//   100%  { opacity: 1 }
-// }
-// @-moz-keyframes barSectionPulse {
-//   0%    { opacity: 1 }
-//   50%   { opacity: .75 }
-//   100%  { opacity: 1 }
-// }
-// @-o-keyframes barSectionPulse {
-//   0%    { opacity: 1 }
-//   50%   { opacity: .75 }
-//   100%  { opacity: 1 }
-// }
-// @keyframes barSectionPulse {
-//   0%    { opacity: 1 }
-//   50%   { opacity: .75 }
-//   100%  { opacity: 1 }
-// }
