@@ -9,21 +9,20 @@ router.get('/', function(req, res, next) {
 
 /* GET data for all items, async */
 router.get('/data', function(req, res, next) {
-  var matchData511 = db.get('match_data');
-  var matchData514 = db.get('match_data2');
+  var matchData511 = db.get('511');
+  var matchData514 = db.get('514');
 
   var promises = [matchData511.find({}), matchData514.find({})];
 
   Promise.all(promises).then(function(values){
     var data = values.map(function(docs){
-      return buildItemData(docs);
+      return buildMatchData(docs);
     });
     res.json({ matchItemData511: data[0], matchItemData514: data[1] });
   });
 });
 
 /* GET data for a single item in fixed slot, async */
-// NOT IMPLEMENTED
 router.get('/singleItemData', function(req, res, next) {
   var itemName = req.query.item;
   var slotIndex = req.query.slot;
@@ -31,22 +30,61 @@ router.get('/singleItemData', function(req, res, next) {
   if (!itemName || !slotIndex) {
     res.status(400).json({'error':'Bad request'});
   }
+
+  var itemData511 = db.get('511');
+  var itemData514 = db.get('514');
+
+  var queryField = 'players.items.' + (parseInt(slotIndex)-1);
+  var singleItemQuery = {};
+  singleItemQuery[queryField] = itemName;
+
+  var promises = [itemData511.find(singleItemQuery), itemData514.find(singleItemQuery)];
+
+  Promise.all(promises).then(function(values){
+    var data = values.map(function(docs){
+      return buildItemData(docs, req.query);
+    });
+    res.json({ singleItemData511: data[0], singleItemData514: data[1] });
+  });
+
 });
 
-var buildItemData = function(docs){
+var buildMatchData = function(docs){
   var items = [{}, {}, {}, {}, {}, {}];
   items.forEach(function(itemSlot, slotIndex){
     docs.forEach(function(doc){
-      for (var player in doc) {
-        if (doc[player].items && doc[player].items[slotIndex]) {
-          var boughtItem = doc[player].items[slotIndex];
+      doc.players.forEach(function(player) {
+        if (player.items[slotIndex]) {
+          var boughtItem = player.items[slotIndex];
           if (itemSlot[boughtItem]) {
             itemSlot[boughtItem] += 1;
           } else {
             itemSlot[boughtItem] = 1;
           }
         }
-      }
+      });
+    });
+  });
+  return items;
+};
+
+var buildItemData = function(docs, query){
+  var items = [{}, {}, {}, {}, {}, {}];
+  items.forEach(function(itemSlot, slotIndex){
+    docs.forEach(function(doc){
+      var wantedPlayers = doc.players.filter(function(player) {
+        return player.items[parseInt(query.slot)-1] === query.item
+      });
+      wantedPlayers.forEach(function(player) {
+        if (player.items[slotIndex]) {
+          var boughtItem = player.items[slotIndex];
+          if (itemSlot[boughtItem]) {
+            itemSlot[boughtItem] += 1;
+          } else {
+            itemSlot[boughtItem] = 1;
+          }
+        }
+      });
     });
   });
   return items;
