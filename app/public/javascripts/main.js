@@ -26,7 +26,7 @@ var hover = false;
  * @param {object} data - new graph data
  */
 var updateGraph = function() {
-  var barData = (patch == '5.11' ? data[1] : data[0]);
+  var barData = (patch == '5.11' ? data[0] : data[1]);
 
   // Reset new items map
   newItems = [];
@@ -441,9 +441,7 @@ $(window).load(function() {
 
     patch = position == 'first' ? '5.11' : '5.14';
 
-    // TODO replace with updateData/getData
     updateGraph();
-
   });
 
   $('#ap-selector-section').click(function() {toggleCategory($(this), 'AP')});
@@ -451,9 +449,17 @@ $(window).load(function() {
   $('#tank-selector-section').click(function() {toggleCategory($(this), 'Tank')});
   $('#misc-selector-section').click(function() {toggleCategory($(this), 'Miscellaneous')});
 
+  // Populate dropdown options
+  championList.forEach(function(champion, index) {
+    $option = $('<option>', {value: champion}).html(champion);
+    $('#champion-select').append($option);
+  });
+
+  $('#champion-select').selectize({placeholder: 'Choose a champion...'});
+
   $.get('/data', function(matchData) {
-    data[1] = matchData.matchItemData511;
-    data[0] = matchData.matchItemData514;
+    data[0] = matchData.matchItemData511;
+    data[1] = matchData.matchItemData514;
     updateGraph();
   });
 });

@@ -332,6 +332,12 @@ body {
     background-color: #5E35B1;
     border-bottom-right-radius: 2px; }
 
+#container-champion-select {
+  float: right;
+  width: 196px;
+  height: 60px;
+  margin-top: 24px; }
+
 .data-switch {
   position: relative;
   color: white;
