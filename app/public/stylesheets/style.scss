@@ -9,14 +9,14 @@ html {
 }
 
 body {
-  min-width: 600px;
+  min-width: 960px;
 
   margin: 0;
 }
 
 .row {
+  float: left;
   width: 100%;
-
 }
 
 .container {
@@ -24,6 +24,10 @@ body {
 }
 
 #main-container {
+
+}
+
+#main-container-row {
 
 }
 
@@ -47,21 +51,21 @@ body {
 }
 
 ///// Graph Row /////
-#row-graph {
+#graph-row {
   height: 600px;
   margin-top: $headerHeight;
   padding-top: $headerHeight;
 }
 
-#container-graph {
+#graph-container {
   float: left;
-  width: 100%;
+  width: calc(80% - 24px);
   height: 100%;
 }
 
 #graph {
   position: relative;
-  width: 80%;
+  width: 90%;
   height: 100%;
   margin: 0 auto 0 auto;
 
@@ -236,11 +240,11 @@ body {
 }
 
 ///// Info Row /////
-#row-info {
+#info-row {
 
 }
 
-#container-info {
+#info-container {
   float: left;
   width: 100%;
   height: 100%;
@@ -277,78 +281,83 @@ body {
   }
 }
 
-#legend {
+#legend-container {
   float: left;
-  width: calc(100% - 200px - #{$yAxisWidth});
-  min-height: 100px;
-  margin-top: 4px;
-  margin-left: $yAxisWidth;
+  width: calc(20% + 24px);
+  margin-top: $headerHeight;
 
-  #legend-title {
+  #legend {
     float: left;
-    width: $yAxisWidth;
-    margin-top: 4px;
-    margin-left: -$yAxisWidth;
+    width: 100%;
+    heigth: 100%;
+    margin-top: 80px;
 
-    line-height: $legendSize;
-    font-size: calc(#{$legendSize} - 8px);
-    text-align: center;
-  }
+    overflow-x: auto;
 
-  .legend-section {
-    float: left;
-    width: calc(15% + 100px);
-    min-width: 200px;
-    height: $legendSize;
-    margin-top: 8px;
-    margin-left: 6px;
-
-    cursor: pointer;
-    @include disable-select();
-    @include transition(box-shadow 333ms, opacity 333ms);
-
-    .legend-section-swatch {
+    #legend-title {
       float: left;
-      width: calc(#{$legendSize} / 2);
-      height: 100%;
+      width: 100%;
 
-      margin-right: 6px;
+      line-height: $legendSize;
+      font-size: calc(#{$legendSize} - 8px);
+      text-align: left;
     }
-    .legend-section-image {
+
+    .legend-section {
       float: left;
-      width: $legendSize;
-      height: 100%;
+      width: 90%;
+      height: $legendSize;
+      margin-top: 8px;
 
-    	background-size: cover;
-      background-color: $grey300;
+      cursor: pointer;
+      @include disable-select();
+      @include transition(box-shadow 333ms, opacity 333ms);
+
+      // .legend-section-swatch {
+      //   float: left;
+      //   width: calc(#{$legendSize} / 2);
+      //   height: 100%;
+      //
+      //   margin-right: 6px;
+      // }
+
+      .legend-section-image {
+        float: left;
+        width: $legendSize;
+        height: 100%;
+
+      	background-size: cover;
+        background-color: $grey300;
+      }
+
+      .legend-section-text {
+        float: left;
+        width: calc(100% - #{$legendSize} - 12px); // subtract image, swatch, swatch margin, padding, border (swatch currently excluded)
+        height: calc(100% - 6px); // subtract border
+        padding: 0 3px;
+
+        line-height: calc(#{$legendSize} - 6px); // subtract border
+        font-size: calc(#{$legendSize} - 12px);
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+
+        border: solid 3px $white;
+
+        @include transition(color 333ms, background-color 333ms, border-color 333ms);
+      }
+
+      .legend-section-text.locked {
+      }
     }
-    .legend-section-text {
-      float: left;
-      width: calc(100% - 2 * #{$legendSize} / 2 - 12px); // subtract image, swatch, swatch margin, padding, border (swatch currently excluded)
-      height: calc(100% - 6px); // subtract border
-      padding: 0 3px;
 
-      line-height: calc(#{$legendSize} - 6px); // subtract border
-      font-size: calc(#{$legendSize} - 12px);
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-
-      border: solid 3px $white;
-
-      @include transition(color 333ms, background-color 333ms, border-color 333ms);
+    .legend-section:hover {
+      @include box-shadow(0 0 3px 0px $boxShadow);
     }
 
-    .legend-section-text.locked {
+    .legend-section:active {
+      @include box-shadow(none);
     }
-  }
-
-  .legend-section:hover {
-    @include box-shadow(0 0 3px 0px $boxShadow);
-  }
-
-  .legend-section:active {
-    @include box-shadow(none);
   }
 }
 
@@ -411,16 +420,11 @@ body {
   }
 }
 
-#container-champion-select {
+#champion-select-container {
   float: right;
   width: 196px;
   height: 60px;
-  margin-top: 24px;  
-}
-
-///// Champions Row /////
-#row-champions {
-
+  margin-top: 24px;
 }
 
 ///// Footer /////
