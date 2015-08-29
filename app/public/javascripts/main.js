@@ -33,14 +33,19 @@ var resetGraph = function() {
   $('#legend').find('.legend-section').remove();
   legendItems = [];
   lockedBars = [null, null, null, null, null, null];
-
 }
 
+var updateGraph = function() {
+  var barElements = $('#graph').find('[id^="bar-"]');
+  barElements.empty();
+  toggleGraph();
+};
+
 /**
- * Updates graph based on new data
+ * Toggles graph based on new data
  * @param {object} data - new graph data
  */
-var updateGraph = function() {
+var toggleGraph = function() {
   var barData = (patch == '5.11' ? data[0] : data[1]);
 
   // Reset new items map
@@ -64,7 +69,6 @@ var updateGraph = function() {
   // Needed totals to properly size sections
   var graph = $('#graph');
   barData.forEach(function(bar, barIndex) {
-
     // Sort keys (items) by category and size.
     var keys = Object.keys(bar);
     keys.sort(function(a, b) {
@@ -73,10 +77,14 @@ var updateGraph = function() {
       // else if (categoryOrder.indexOf(itemCategoryMap[a]) > categoryOrder.indexOf(itemCategoryMap[b]))
       //   return 1;
       // else
-        return bar[a] < bar[b] ? 1 : (bar[a] > bar[b] ? -1 : 0);
+      if (bar[a] < bar[b]) {
+        return 1
+      } else if (bar[a] > bar[b]) {
+        return -1
+      } else {
+        return 0
+      }
     });
-
-
 
     var barElement = $('#graph').find('#bar-' + barIndex);
     var otherPercent = 0;
@@ -107,7 +115,6 @@ var updateGraph = function() {
       $barSectionElement.find('.graph-bar-section-inner').css({'border-color': percent ? colorMap[itemCategoryMap[item]] : '#ffffff',
                                                                  'background-color': percent ? colorMap[itemCategoryMap[item]] : '#ffffff'});
 
-
       if (percent > 0) {
         // Check for locked bar item
         if (app.state.lockedBars[barIndex] && app.state.lockedBars[barIndex] == item)
@@ -134,9 +141,6 @@ var updateGraph = function() {
     }
 
   });
-
-
-
 
   // Remove bar and legend sections for
   // items that are no longer present (following a graph update)
@@ -219,7 +223,6 @@ var addItemSection = function(itemName, percent, parent) {
  */
 var updateItemSection = function(itemName, percent, elem) {
 
-
   if (!elem.height() && !percent)
     return;
   var className = classNameMap[itemName];
@@ -238,7 +241,8 @@ var updateItemSection = function(itemName, percent, elem) {
       unfocusItem(className);
       removeTooltip($(this));
     }
-  );};
+  );
+};
 
 
 /**
@@ -360,12 +364,7 @@ var lockBar = function(index, itemName, $tooltipLock) {
   else
     $tooltipLock.removeClass('fa-unlock-alt').addClass('fa-lock');
 
-
-  ///////////////////////////////////
-  // TODO get new data from server //
-  ///////////////////////////////////
-
-  updateGraph();
+  app.getNewData();
 };
 
 // /**
@@ -436,11 +435,11 @@ var removeTooltip = function(elem) {
  * @returns {string} text color
  */
 var getTextColor = function(color) {
- 	var r = parseInt(color.substr(1,2),16);
- 	var g = parseInt(color.substr(3,2),16);
- 	var b = parseInt(color.substr(5,2),16);
- 	var yiq = ((r*299)+(g*587)+(b*114))/1000;
- 	return (yiq >= 158) ? 'black' : 'white';
+  var r = parseInt(color.substr(1,2),16);
+  var g = parseInt(color.substr(3,2),16);
+  var b = parseInt(color.substr(5,2),16);
+  var yiq = ((r*299)+(g*587)+(b*114))/1000;
+  return (yiq >= 158) ? 'black' : 'white';
 };
 
 app.getNewData = function(){
@@ -454,6 +453,7 @@ app.getNewData = function(){
       }
     }
   }).filter(Boolean);
+
   $.get('/singleItemData', params)
     .done(function(singleItemData){
       data[0] = singleItemData.singleItemData511;
@@ -477,7 +477,7 @@ $(window).load(function() {
 
     patch = position == 'first' ? '5.11' : '5.14';
 
-    updateGraph();
+    toggleGraph();
   });
 
   // $('#ap-selector-section').click(function() {toggleCategory($(this), 'AP')});
