@@ -1,14 +1,30 @@
 html {
+  width: 100%;
+  height: 100%;
   color: rgba(0, 0, 0, 0.87);
   font-family: "Rajdhani", "Trebuchet MS", sans-serif; }
 
 body {
+  width: 100%;
+  height: 100%;
   min-width: 960px;
   margin: 0; }
+
+#wrapper {
+  width: 100%;
+  height: 100%; }
 
 .row {
   float: left;
   width: 100%; }
+
+#main-container {
+  width: 100%;
+  height: calc(100% - 100px);
+  min-height: 800px; }
+
+#main-container-row {
+  height: 100%; }
 
 #header {
   position: fixed;
@@ -25,9 +41,9 @@ body {
   margin-left: 12px; }
 
 #graph-row {
-  height: 600px;
+  height: calc(100% - 40px - 40px);
   margin-top: 40px;
-  padding-top: 40px; }
+  padding-top: 20px; }
 
 #graph-container {
   float: left;
@@ -50,8 +66,8 @@ body {
   position: absolute;
   left: 70px;
   width: calc(100% - 70px);
-  height: 40px;
-  line-height: 40px;
+  height: 60px;
+  line-height: 60px;
   font-size: 28px;
   text-align: center;
   cursor: default; }
@@ -68,9 +84,9 @@ body {
 
 #graph-y-axis {
   position: absolute;
-  top: 40px;
+  top: 60px;
   width: 70px;
-  height: calc(100% - 72px - 40px); }
+  height: calc(100% - 72px - 60px); }
   #graph-y-axis .axis-title {
     left: 0;
     -webkit-transform: rotate(-90deg);
@@ -125,10 +141,10 @@ body {
 
 #graph-area {
   position: absolute;
-  top: 40px;
+  top: 60px;
   left: 70px;
   width: calc(100% - 70px);
-  height: calc(100% - 72px - 40px); }
+  height: calc(100% - 72px - 60px); }
   #graph-area .graph-bar {
     float: left;
     width: calc(100% / 6);
@@ -186,6 +202,9 @@ body {
     -moz-box-shadow: none;
     box-shadow: none; }
 
+#info-row {
+  height: 100px; }
+
 #info-container {
   float: left;
   width: 100%;
@@ -193,7 +212,7 @@ body {
 
 #info {
   position: relative;
-  width: 80%;
+  width: 90%;
   height: 100%;
   margin: 12px auto;
   border-top: solid 1px rgba(0, 0, 0, 0.22); }
@@ -227,7 +246,8 @@ body {
     overflow-x: auto; }
     #legend-container #legend #legend-title {
       float: left;
-      width: 100%;
+      width: 90%;
+      margin-left: 3px;
       line-height: 28px;
       font-size: calc(28px - 8px);
       text-align: left; }
@@ -235,7 +255,7 @@ body {
       float: left;
       width: 90%;
       height: 28px;
-      margin-top: 8px;
+      margin: 8px 0 0 3px;
       cursor: pointer;
       -webkit-touch-callout: none;
       -webkit-user-select: none;
@@ -331,8 +351,12 @@ body {
 #champion-select-container {
   float: right;
   width: 196px;
-  height: 60px;
-  margin-top: 24px; }
+  height: 60px; }
+
+#footer {
+  width: 100%;
+  height: 100px;
+  background-color: #212121; }
 
 .data-switch {
   position: relative;

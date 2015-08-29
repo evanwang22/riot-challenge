@@ -21,6 +21,15 @@ var categoryMap = {'AP' : true,
 var tooltipTimer;
 // Tracking variable for tooltip delay
 var hover = false;
+
+var resetGraph = function() {
+  $('.graph-bar').children().remove();
+  $('#legend').find('.legend-section').remove();
+  legendItems = [];
+  lockedBars = [null, null, null, null, null, null];
+
+}
+
 /**
  * Updates graph based on new data
  * @param {object} data - new graph data
@@ -37,6 +46,7 @@ var updateGraph = function() {
   barData.forEach(function(bar, barIndex) {
     for (var item in bar) {
       // Skip if item category hidden
+      // TODO category removal
       if (!categoryMap[itemCategoryMap[item]])
         continue;
 
@@ -52,11 +62,11 @@ var updateGraph = function() {
     // Sort keys (items) by category and size.
     var keys = Object.keys(bar);
     keys.sort(function(a, b) {
-      if (categoryOrder.indexOf(itemCategoryMap[a]) < categoryOrder.indexOf(itemCategoryMap[b]))
-        return -1;
-      else if (categoryOrder.indexOf(itemCategoryMap[a]) > categoryOrder.indexOf(itemCategoryMap[b]))
-        return 1;
-      else
+      // if (categoryOrder.indexOf(itemCategoryMap[a]) < categoryOrder.indexOf(itemCategoryMap[b]))
+      //   return -1;
+      // else if (categoryOrder.indexOf(itemCategoryMap[a]) > categoryOrder.indexOf(itemCategoryMap[b]))
+      //   return 1;
+      // else
         return bar[a] < bar[b] ? 1 : (bar[a] > bar[b] ? -1 : 0);
     });
 
@@ -71,6 +81,7 @@ var updateGraph = function() {
       var percent = bar[item] / totals[barIndex];
 
       // Set percent to 0 here to properly hide sections
+      // TODO category removal
       if (!categoryMap[itemCategoryMap[item]])
         percent = 0;
 
@@ -82,7 +93,7 @@ var updateGraph = function() {
 
       // Update section if it already exists
       $barSectionElement = barElement.find('.' + classNameMap[item]);
-      if (!$barSectionElement.length)
+      if (!$barSectionElement.length && percent)
         $barSectionElement = addItemSection(item, percent, barElement);
       else
         updateItemSection(item, percent, $barSectionElement);
@@ -201,15 +212,15 @@ var addItemSection = function(itemName, percent, parent) {
  * @returns {jQueryObject} graph bar section
  */
 var updateItemSection = function(itemName, percent, elem) {
+
+
+  if (!elem.height() && !percent)
+    return;
   var className = classNameMap[itemName];
   var color = colorMap[itemCategoryMap[itemName]];
 
-  if (elem.is(':hidden'));
-    elem.show();
-  if (elem.is(':visible') && !percent)
-    elem.hide();
-
   elem.height((percent * 100) + '%');
+
   elem.find('.graph-bar-section-inner').hover(
     function() {
       hover = true;
@@ -351,18 +362,18 @@ var lockBar = function(index, itemName, $tooltipLock) {
   updateGraph();
 };
 
-/**
- * Toggles visibility for a given item category
- *
- * @param {jQueryObject} elem - element triggering the toggle
- * @param {string} category - item category
- */
-var toggleCategory = function(elem, category) {
-  elem.toggleClass('visible');
-
-  categoryMap[category] = !categoryMap[category];
-  updateGraph();
-};
+// /**
+//  * Toggles visibility for a given item category
+//  *
+//  * @param {jQueryObject} elem - element triggering the toggle
+//  * @param {string} category - item category
+//  */
+// var toggleCategory = function(elem, category) {
+//   elem.toggleClass('visible');
+//
+//   categoryMap[category] = !categoryMap[category];
+//   updateGraph();
+// };
 
 /**
  * Creates tooltip on given element
@@ -444,10 +455,10 @@ $(window).load(function() {
     updateGraph();
   });
 
-  $('#ap-selector-section').click(function() {toggleCategory($(this), 'AP')});
-  $('#ad-selector-section').click(function() {toggleCategory($(this), 'AD')});
-  $('#tank-selector-section').click(function() {toggleCategory($(this), 'Tank')});
-  $('#misc-selector-section').click(function() {toggleCategory($(this), 'Miscellaneous')});
+  // $('#ap-selector-section').click(function() {toggleCategory($(this), 'AP')});
+  // $('#ad-selector-section').click(function() {toggleCategory($(this), 'AD')});
+  // $('#tank-selector-section').click(function() {toggleCategory($(this), 'Tank')});
+  // $('#misc-selector-section').click(function() {toggleCategory($(this), 'Miscellaneous')});
 
   // Populate dropdown options
   championList.forEach(function(champion, index) {

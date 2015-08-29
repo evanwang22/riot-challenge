@@ -4,14 +4,23 @@
 
 ///// Content /////
 html {
+  width: 100%;
+  height: 100%;
   color: $darkTextPrimary;
   font-family: "Rajdhani", "Trebuchet MS", sans-serif;
 }
 
 body {
+  width: 100%;
+  height: 100%;
   min-width: 960px;
 
   margin: 0;
+}
+
+#wrapper {
+  width: 100%;
+  height: 100%;
 }
 
 .row {
@@ -24,11 +33,13 @@ body {
 }
 
 #main-container {
-
+  width: 100%;
+  height: calc(100% - 100px);
+  min-height: 800px;
 }
 
 #main-container-row {
-
+  height: 100%;
 }
 
 ///// Header /////
@@ -52,9 +63,9 @@ body {
 
 ///// Graph Row /////
 #graph-row {
-  height: 600px;
+  height: calc(100% - 40px - #{$headerHeight});
   margin-top: $headerHeight;
-  padding-top: $headerHeight;
+  padding-top: 20px;
 }
 
 #graph-container {
@@ -241,7 +252,7 @@ body {
 
 ///// Info Row /////
 #info-row {
-
+  height: 100px;
 }
 
 #info-container {
@@ -252,7 +263,7 @@ body {
 
 #info {
   position: relative;
-  width: 80%;
+  width: 90%;
   height: 100%;
   margin: 12px auto;
 
@@ -296,18 +307,19 @@ body {
 
     #legend-title {
       float: left;
-      width: 100%;
-
+      width: 90%;
+      margin-left: 3px;
       line-height: $legendSize;
       font-size: calc(#{$legendSize} - 8px);
       text-align: left;
+
     }
 
     .legend-section {
       float: left;
       width: 90%;
       height: $legendSize;
-      margin-top: 8px;
+      margin: 8px 0 0 3px;
 
       cursor: pointer;
       @include disable-select();
@@ -424,12 +436,15 @@ body {
   float: right;
   width: 196px;
   height: 60px;
-  margin-top: 24px;
 }
 
 ///// Footer /////
 #footer {
 
+  width: 100%;
+  height: 100px;
+
+  background-color: $grey900;
 }
 
 ///// Other /////
