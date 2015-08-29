@@ -1,141 +1,3 @@
-var itemCategoryMap = {
-"Abyssal Scepter" : "AP",
-"Archangel's Staff" : "AP",
-"Ardent Censer" : "AP",
-"Athene's Unholy Grail" : "AP",
-"Banner of Command" : "AP",
-"Banshee's Veil" : "Tank",
-"Blade of the Ruined King" : "AD",
-"The Black Cleaver" : "AD",
-"The Bloodthirster" : "AD",
-"Dead Man's Plate" : "Tank",
-"Essence Reaver" : "AD",
-"Face of the Mountain" : "Tank",
-"Frost Queen's Claim" : "AP",
-"Frozen Heart" : "Tank",
-"Frozen Mallet" : "Tank",
-"Guardian Angel" : "Tank",
-"Guinsoo's Rageblade" : "Miscellaneous",
-"Hextech Gunblade" : "Miscellaneous",
-"Iceborn Gauntlet" : "Tank",
-"Infinity Edge" : "AD",
-"Last Whisper" : "AD",
-"Liandry's Torment" : "AP",
-"Lich Bane" : "AP",
-"Locket of the Iron Solari" : "Tank",
-"Luden's Echo" : "AP",
-"Manamune" : "AD",
-"Maw of Malmortius" : "AD",
-"Mejai's Soulstealer" : "AP",
-"Mercurial Scimitar" : "AD",
-"Mikael's Crucible" : "Miscellaneous",
-"Morellonomicon" : "AP",
-"Nashor's Tooth" : "AP",
-"Ohmwrecker" : "Tank",
-"Phantom Dancer" : "AD",
-"Rabadon's Deathcap" : "AP",
-"Randuin's Omen" : "Tank",
-"Ravenous Hydra (Melee Only)" : "AD",
-"Righteous Glory" : "Tank",
-"Rod of Ages" : "AP",
-"Runaan's Hurricane (Ranged Only)" : "AD",
-"Rylai's Crystal Scepter" : "AP",
-"Sightstone" : "Miscellaneous",
-"Spirit Visage" : "Tank",
-"Statikk Shiv" : "AD",
-"Sterak's Gage" : "Tank",
-"Sunfire Cape" : "Tank",
-"Sword of the Occult" : "AD",
-"Talisman of Ascension" : "Miscellaneous",
-"Thornmail" : "Tank",
-"Titanic Hydra" : "Tank",
-"Trinity Force" : "AD",
-"Twin Shadows" : "AP",
-"Void Staff" : "AP",
-"Warmog's Armor" : "Tank",
-"Will of the Ancients" : "AP",
-"Wit's End" : "Miscellaneous",
-"Youmuu's Ghostblade" : "AD",
-"Zeke's Harbinger" : "Miscellaneous",
-"Zeke's Herald" : "Miscellaneous",
-"Zephyr" : "AD",
-"Zhonya's Hourglass" : "AP",
-"Zz'Rot Portal" : "Tank",
-
-"Boots of Swiftness" : "Miscellaneous",
-"Mercury's Treads" : "Tank",
-"Sorcerer's Shoes" : "AP",
-"Boots of Mobility" : "Miscellaneous",
-"Berserker's Greaves" : "AD",
-"Ionian Boots of Lucidity" : "Miscellaneous",
-
-"Perfect Hex Core" : "AP",
-
-"Enchantment: Warrior" : "AD",
-"Enchantment: Magus" : "AP",
-"Enchantment: Runeglaive" : "AP",
-"Enchantment: Juggernaut" : "Tank",
-"Enchantment: Cinderhulk" : "Tank",
-"Enchantment: Devourer" : "Miscellaneous",
-
-"Other" : "Other"
-};
-
-
-
-// Available colors
-// Pulled from https://www.google.com/design/spec/style/color.html#color-color-palette
-var colorList = [
-  "#3F51B5", // Indigo
-  "#2196F3", // Blue
-  "#00BCD4", // Cyan
-  "#009688", // Teal
-  "#4CAF50", // Green
-  "#8BC34A", // Light Green
-  "#CDDC39", // Lime
-  "#FFEB3B", // Yellow
-  "#FFC107", // Amber
-  "#FF9800", // Orange
-  "#FF5722", // Deep Orange
-  "#F44336", // Red
-  "#E91E63", // Pink
-  "#9C27B0", // Purple
-  "#673AB7" // Deep Purple
-];
-
-var colorMap = {
-  // "AP" : "#173C79",
-  // "AD" : "#94724D",
-  // "Tank" : "#195657",
-  // "Miscellaneous" : "#332B50",
-
-  // "Other" : "#444444"
-  // "AP" : "#2D4CA0",
-  // "AD" : "#EE4B2D",
-  // "Tank" : "#21AE51",
-  // "Miscellaneous" : "#EEB02D",
-  // "Other" : "#444444"
-
-  "AP" : "#1E88E5",
-  "AD" : "#F4511E",
-  "Tank" : "#43A047",
-  "Miscellaneous" : "#5E35B1",
-  "Other" : "#dddddd"
-
-  // "AP" : "#3C6579",
-  // "AD" : "#3C6579",
-  // "Tank" : "#3C6579",
-  // "Miscellaneous" : "#3C6579",
-  // "Other" : "#eeeeee"
-
-}
-
-// Create map of item name to class name
-var classNameMap = {};
-Object.keys(itemCategoryMap).forEach(function(item, itemIndex) {
-  classNameMap[item] = item.replace(/\s|'|\(|\)|:/g, "");
-});
-
 // Number of colors in use
 var colorCount = 0;
 // Keeps track of item colors
@@ -155,8 +17,6 @@ var categoryMap = {'AP' : true,
                    'AD' : false,
                    'Tank' : false,
                    'Miscellaneous' : false};
-// Order to display categories in
-var categoryOrder = ['AP', 'AD', 'Tank', 'Miscellaneous'];
 // Timer for tooltip delays
 var tooltipTimer;
 // Tracking variable for tooltip delay
@@ -214,7 +74,7 @@ var updateGraph = function() {
       if (!categoryMap[itemCategoryMap[item]])
         percent = 0;
 
-      // If less than 4%, group with Other
+      // If less than 3%, group with Other
       if (percent < .03) {
         otherPercent += percent;
         percent = 0;
@@ -222,11 +82,10 @@ var updateGraph = function() {
 
       // Update section if it already exists
       $barSectionElement = barElement.find('.' + classNameMap[item]);
-      if (!$barSectionElement.length) {
+      if (!$barSectionElement.length)
         $barSectionElement = addItemSection(item, percent, barElement);
-      }
       else
-        $barSectionElement.height((percent * 100) + '%');
+        updateItemSection(item, percent, $barSectionElement);
 
       $barSectionElement.find('.graph-bar-section-inner').css({'border-color': percent ? colorMap[itemCategoryMap[item]] : '#ffffff',
                                                                  'background-color': percent ? colorMap[itemCategoryMap[item]] : '#ffffff'});
@@ -245,13 +104,13 @@ var updateGraph = function() {
     $otherSectionElement = barElement.find('.Other');
     if ($otherSectionElement.length) {
       $otherSectionElement.parent().prepend($otherSectionElement[0]);
-      $otherSectionElement.height((otherPercent * 100) + '%');
+      updateItemSection("Other", otherPercent, $otherSectionElement);
       $otherSectionElement.find('.graph-bar-section-inner').css({'border-color': otherPercent ? colorMap[itemCategoryMap['Other']] : '#ffffff',
                                                                  'background-color': otherPercent ? colorMap[itemCategoryMap['Other']] : '#ffffff'});
     }
 
     // Otherwise, create new bar and legend sections
-    else {
+    else if (otherPercent) {
       addItemSection('Other', otherPercent, barElement);
       if (!$('#legend').find('.Other').length)
         addLegendSection('Other', $('#legend'));
@@ -293,6 +152,7 @@ var updateGraph = function() {
  */
 var addItemSection = function(itemName, percent, parent) {
   var className = classNameMap[itemName];
+  var color = colorMap[itemCategoryMap[itemName]];
 
   // Create outer element
   var $outer = $('<div>', {class: "graph-bar-section " + className});
@@ -300,13 +160,12 @@ var addItemSection = function(itemName, percent, parent) {
 
   // Create inner element
   var $inner = $('<div>', {class: "graph-bar-section-inner"});
-  $inner.css('background-color', colorMap[itemCategoryMap[itemName]]);
-  $inner.css('border-color', colorMap[itemCategoryMap[itemName]]);
+  $inner.css('background-color', color);
+  $inner.css('border-color', color);
 
   var $innerShadow = $('<div>', {class: "graph-bar-section-inner-shadow"});
   $inner.append($innerShadow);
 
-  var color = colorMap[itemCategoryMap[itemName]];
   // Add event handlers
   $inner.hover(
     function() {
@@ -332,6 +191,37 @@ var addItemSection = function(itemName, percent, parent) {
   $outer.height((percent * 100) + '%');
   return $outer;
 };
+
+/**
+ * Updates graph bar section for an item
+ *
+ * @param {string} itemName - full name of item
+ * @param {number} percent - percent of bar height new section should take
+ * @param {jQueryObject} element - element to update
+ * @returns {jQueryObject} graph bar section
+ */
+var updateItemSection = function(itemName, percent, elem) {
+  var className = classNameMap[itemName];
+  var color = colorMap[itemCategoryMap[itemName]];
+
+  if (elem.is(':hidden'));
+    elem.show();
+  if (elem.is(':visible') && !percent)
+    elem.hide();
+
+  elem.height((percent * 100) + '%');
+  elem.find('.graph-bar-section-inner').hover(
+    function() {
+      hover = true;
+      focusItem(className, color);
+      createTooltip($(this), itemName, percent);
+    },
+    function() {
+      hover = false;
+      unfocusItem(className);
+      removeTooltip($(this));
+    }
+  );};
 
 
 /**

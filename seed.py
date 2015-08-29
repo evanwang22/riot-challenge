@@ -179,7 +179,7 @@ def seed(match_ids):
             client = MongoClient()
             db = client['riot_challenge']
 
-            match_data = db['match_data']
+            match_data = db['514']
             match_data.insert_one({ 'players': player_data_list })
         except KeyError:
             print "Unexpected error:", sys.exc_info()[0]
