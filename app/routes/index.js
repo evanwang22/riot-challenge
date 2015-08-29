@@ -24,8 +24,8 @@ router.get('/data', function(req, res, next) {
 
 /* GET data for a single item in fixed slot, async */
 router.get('/singleItemData', function(req, res, next) {
-  var itemName = req.query.item;
-  var slotIndex = req.query.slot;
+  var itemName = req.query.lockedBars[0].item;
+  var slotIndex = req.query.lockedBars[0].slot;
 
   if (!itemName || !slotIndex) {
     res.status(400).json({'error':'Bad request'});
@@ -34,7 +34,7 @@ router.get('/singleItemData', function(req, res, next) {
   var itemData511 = db.get('511');
   var itemData514 = db.get('514');
 
-  var queryField = 'players.items.' + (parseInt(slotIndex)-1);
+  var queryField = 'players.items.' + (parseInt(slotIndex));
   var singleItemQuery = {};
   singleItemQuery[queryField] = itemName;
 
@@ -42,7 +42,7 @@ router.get('/singleItemData', function(req, res, next) {
 
   Promise.all(promises).then(function(values){
     var data = values.map(function(docs){
-      return buildItemData(docs, req.query);
+      return buildItemData(docs, req.query.lockedBars[0]);
     });
     res.json({ singleItemData511: data[0], singleItemData514: data[1] });
   });
@@ -73,7 +73,7 @@ var buildItemData = function(docs, query){
   items.forEach(function(itemSlot, slotIndex){
     docs.forEach(function(doc){
       var wantedPlayers = doc.players.filter(function(player) {
-        return player.items[parseInt(query.slot)-1] === query.item
+        return player.items[parseInt(query.slot)] === query.item
       });
       wantedPlayers.forEach(function(player) {
         if (player.items[slotIndex]) {
