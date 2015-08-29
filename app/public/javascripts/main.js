@@ -6,12 +6,18 @@ var colorCount = 0;
 var legendItems = [];
 // Keeps track of new items (following a graph update) to compare against old ('current') items
 var newItems;
-// Keeps track of permanently locked items
-var lockedBars = [null, null, null, null, null, null];
 // Keeps track of patch to show data for
 var patch = '5.14';
 // Holds the data
 var data = [];
+
+var app = {
+  state: {
+    champion: null,
+    lockedBars: [null, null, null, null, null, null]
+  }
+};
+
 // Keeps track of item types to show
 var categoryMap = {'AP' : true,
                    'AD' : false,
@@ -104,7 +110,7 @@ var updateGraph = function() {
 
       if (percent > 0) {
         // Check for locked bar item
-        if (lockedBars[barIndex] && lockedBars[barIndex] == item)
+        if (app.state.lockedBars[barIndex] && app.state.lockedBars[barIndex] == item)
           $barSectionElement.find('.graph-bar-section-inner').addClass('permanent');
 
         if (newItems.indexOf(item) == -1)
@@ -347,9 +353,9 @@ var lockItem = function(elem, className, color) {
  */
 var lockBar = function(index, itemName, $tooltipLock) {
   $('#bar-' + index).find('.permanent').removeClass('permanent');
-  lockedBars[index] = lockedBars[index] == itemName ? null : itemName;
+  app.state.lockedBars[index] = app.state.lockedBars[index] == itemName ? null : itemName;
 
-  if (lockedBars[index])
+  if (app.state.lockedBars[index])
     $tooltipLock.removeClass('fa-lock').addClass('fa-unlock-alt');
   else
     $tooltipLock.removeClass('fa-unlock-alt').addClass('fa-lock');
@@ -436,6 +442,25 @@ var getTextColor = function(color) {
  	var yiq = ((r*299)+(g*587)+(b*114))/1000;
  	return (yiq >= 158) ? 'black' : 'white';
 };
+
+app.getNewData = function(){
+  var params = {};
+
+  params.lockedBars = app.state.lockedBars.map(function(item, index){
+    if (item) {
+      return {
+        slot: index,
+        item: item
+      }
+    }
+  }).filter(Boolean);
+  $.get('/singleItemData', params)
+    .done(function(singleItemData){
+      data[0] = singleItemData.singleItemData511;
+      data[1] = singleItemData.singleItemData514;
+      updateGraph();
+    });
+}
 
 $(window).load(function() {
 
