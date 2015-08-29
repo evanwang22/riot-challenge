@@ -31,7 +31,16 @@
           <!-- Graph Row -->
       		<div id="graph-row" class="row">
               <div id="graph">
-                <div id="graph-title">Build Order Trends</div>
+                <div id="graph-title-container">
+                  <div id="graph-title">
+                    Build Order Trends
+                  </div>
+                  <div id="patch-switch" class="data-switch" data-position="second">
+                    <div id="patch-switch-fill" class="data-switch-fill"></div>
+                    <div id="patch-switch-first" class="data-switch-first">5.11</div>
+                    <div id="patch-switch-second" class="data-switch-second">5.14</div>
+                  </div>
+                </div>
                 <div id="graph-y-axis">
                   <div class="axis-title">Popularity</div>
                   <div class="label first">100</div>
@@ -78,14 +87,9 @@
               </div>
             </div>
             <!-- Options Row -->
-            <div id="info-row" class="row">
+            <!-- <div id="info-row" class="row">
               <div id="info-container" class="container">
-                <div id="info">
-                  <div id="patch-switch" class="data-switch" data-position="second">
-                    <div id="patch-switch-fill" class="data-switch-fill"></div>
-                    <div id="patch-switch-first" class="data-switch-first">5.11</div>
-                    <div id="patch-switch-second" class="data-switch-second">5.14</div>
-                  </div>
+                <div id="info"> -->
                   <!-- <div id="category-selector">
                     <div id="ap-selector-section" class="category-selector-section visible">
                       AP
@@ -100,17 +104,16 @@
                       Misc
                     </div>
                   </div> -->
-                  <div id="champion-select-container">
-                    <select id="champion-select">
-                      <option value=""></option>
-                    </select>
-
-                  </div>
-                </div>
+                <!-- </div>
               </div>
-            </div>
+            </div> -->
           </div>
           <div id="legend-container" class="container">
+            <div id="champion-select-container">
+              <select id="champion-select">
+                <option value=""></option>
+              </select>
+            </div>
             <div id="legend">
               <div id="legend-title">
                 Items
