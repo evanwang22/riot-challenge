@@ -117,15 +117,16 @@ def seed(match_ids):
 
             while api_tries < 10:
                 try:
+                    time.sleep(0.3)
                     match_URL = 'https://na.api.pvp.net/api/lol/na/v2.2/match/' + match_id
                     match_payload = {'api_key': api_keys[index%1], 'includeTimeline': True}
                     match_request = requests.get(match_URL, match_payload)
                     match_json = match_request.json()
                     break
                 except:
-                  print "API error:", sys.exc_info()[0]
-                  print match_request
-                  time.sleep(0.5)
+                    time.sleep(0.3)
+                    print "API error:", sys.exc_info()[0]
+                    print match_request
 
             # get list of participants
             match_participants = match_json['participants']

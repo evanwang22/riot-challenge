@@ -46,11 +46,6 @@ var resetGraph = function() {
 //  app.state.lockedBars = [null, null, null, null, null, null];
 }
 
-// var updateGraph = function() {
-//   var barElements = $('#graph').find('[id^="bar-"]');
-//   barElements.empty();
-//   toggleGraph();
-// };
 
 /**
  * Updates graph based on new data
@@ -257,7 +252,6 @@ var removeItemSection = function(barElement, itemName) {
   $element.css({'height': 0, 'opacity': .5});
 
 };
-
 
 /**
  * Updates other bar section
@@ -499,6 +493,22 @@ var getTextColor = function(color) {
   return (yiq >= 158) ? 'black' : 'white';
 };
 
+/**
+ * Initializes selectize which calls updateGraph on change
+ *
+ * @param {string} selector - selector for element to initialize selectize with
+ */
+var initChampionSelectize = function(selector) {
+  $select = $(selector).selectize({placeholder: 'Choose a champion...'});
+  var selectize = $select[0].selectize;
+
+  selectize.on('change', function(value){
+    app.state.champion = value;
+    app.state.lockedBars = [null, null, null, null, null, null];
+    app.getNewData();
+  });
+}
+
 app.getNewData = function(){
   var params = {};
 
@@ -511,8 +521,12 @@ app.getNewData = function(){
     }
   }).filter(Boolean);
 
+  if (app.state.champion) {
+    params.champion = app.state.champion;
+  }
+
   var ajaxPromise;
-  if (params.lockedBars.length === 0) {
+  if (params.lockedBars.length === 0 && !params.champion) {
     ajaxPromise = $.get('/data');
   } else {
     ajaxPromise = $.get('/singleItemData', params);
@@ -554,11 +568,7 @@ $(window).load(function() {
     $('#champion-select').append($option);
   });
 
-  $('#champion-select').selectize({placeholder: 'Choose a champion...'});
+  initChampionSelectize('#champion-select');
 
-  $.get('/data', function(matchData) {
-    data[0] = matchData.itemData511;
-    data[1] = matchData.itemData514;
-    updateGraph();
-  });
+  app.getNewData();
 });

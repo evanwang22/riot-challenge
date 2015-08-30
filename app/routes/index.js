@@ -32,10 +32,12 @@ router.get('/singleItemData', function(req, res, next) {
     searchQuery['champion'] = req.query.champion
   }
 
-  req.query.lockedBars.forEach(function(lockedBar){
-    var field = 'items.' + lockedBar.slot;
-    searchQuery[field] = lockedBar.item;
-  });
+  if (req.query.lockedBars) {
+    req.query.lockedBars.forEach(function(lockedBar){
+      var field = 'items.' + lockedBar.slot;
+      searchQuery[field] = lockedBar.item;
+    });
+  }
 
   if (_.isEmpty(searchQuery)) {
     res.status(400).json({'error':'Bad request'});
@@ -52,7 +54,6 @@ router.get('/singleItemData', function(req, res, next) {
     });
     res.json({ itemData511: data[0], itemData514: data[1] });
   });
-
 });
 
 var buildMatchData = function(docs){
