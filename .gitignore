@@ -30,4 +30,4 @@ node_modules
 .env
 
 # SASS cache
-.sass-cache
+*.sass-cache

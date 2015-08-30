@@ -44,8 +44,13 @@ var resetGraph = function() {
   $('#legend').find('.legend-section').remove();
   legendItems = [];
 //  app.state.lockedBars = [null, null, null, null, null, null];
-
 }
+
+// var updateGraph = function() {
+//   var barElements = $('#graph').find('[id^="bar-"]');
+//   barElements.empty();
+//   toggleGraph();
+// };
 
 /**
  * Updates graph based on new data
@@ -127,7 +132,6 @@ var updateGraph = function() {
           break;
       }
     });
-
     updateOtherSection(barElement, otherPercent);
   });
 
@@ -146,108 +150,6 @@ var updateGraph = function() {
 
   oldBarData = newBarData;
   oldBarDataTotals = barDataTotals;
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  // barData.forEach(function(bar, barIndex) {
-  //
-  //   // Sort keys (items) by category and size.
-  //   var keys = Object.keys(bar);
-  //   keys.sort(function(a, b) {
-  //     // if (categoryOrder.indexOf(itemCategoryMap[a]) < categoryOrder.indexOf(itemCategoryMap[b]))
-  //     //   return -1;
-  //     // else if (categoryOrder.indexOf(itemCategoryMap[a]) > categoryOrder.indexOf(itemCategoryMap[b]))
-  //     //   return 1;
-  //     // else
-  //       return bar[a] < bar[b] ? 1 : (bar[a] > bar[b] ? -1 : 0);
-  //   });
-  //
-  //
-  //
-  //   var barElement = $('#graph').find('#bar-' + barIndex);
-  //   var otherPercent = 0;
-  //   // Update/add bar sections
-  //   for (var i = 0; i < keys.length; i++) {
-  //     var item = keys[i];
-  //
-  //     var percent = bar[item] / totals[barIndex];
-  //
-  //     // Set percent to 0 here to properly hide sections
-  //     // TODO category removal
-  //     if (!categoryMap[itemCategoryMap[item]])
-  //       percent = 0;
-  //
-  //     // If less than 3%, group with Other
-  //     if (percent < .03) {
-  //       otherPercent += percent;
-  //       percent = 0;
-  //     }
-  //
-  //     // Update section if it already exists
-  //     $barSectionElement = barElement.find('.' + classNameMap[item]);
-  //     if (!$barSectionElement.length && percent)
-  //       $barSectionElement = addItemSection(item, percent, barElement);
-  //     else
-  //       updateItemSection(item, percent, $barSectionElement);
-  //
-  //     $barSectionElement.find('.graph-bar-section-inner').css({'border-color': percent ? colorMap[itemCategoryMap[item]] : '#ffffff',
-  //                                                                'background-color': percent ? colorMap[itemCategoryMap[item]] : '#ffffff'});
-  //
-  //
-  //     if (percent > 0) {
-  //       // Check for locked bar item
-  //       if (app.state.lockedBars[barIndex] && app.state.lockedBars[barIndex] == item)
-  //         $barSectionElement.find('.graph-bar-section-inner').addClass('permanent');
-  //
-  //       if (newItems.indexOf(item) == -1)
-  //         newItems.push(item);
-  //     }
-  //   }
-  //
-  //   $otherSectionElement = barElement.find('.Other');
-  //   if ($otherSectionElement.length) {
-  //     $otherSectionElement.parent().prepend($otherSectionElement[0]);
-  //     updateItemSection("Other", otherPercent, $otherSectionElement);
-  //     $otherSectionElement.find('.graph-bar-section-inner').css({'border-color': otherPercent ? colorMap[itemCategoryMap['Other']] : '#ffffff',
-  //                                                                'background-color': otherPercent ? colorMap[itemCategoryMap['Other']] : '#ffffff'});
-  //   }
-  //
-  //   // Otherwise, create new bar and legend sections
-  //   else if (otherPercent) {
-  //     addItemSection('Other', otherPercent, barElement);
-  //     if (!$('#legend').find('.Other').length)
-  //       addLegendSection('Other', $('#legend'));
-  //   }
-  //
-  // });
-  //
-  //
-  //
-  //
-  // // Remove bar and legend sections for
-  // // items that are no longer present (following a graph update)
-  // for (var i = 0; i < legendItems.length; i++) {
-  //   var item = legendItems[i];
-  //   if (newItems.indexOf(item) == -1) {
-  //     $('#legend .' + classNameMap[item]).parent().remove();
-  //     legendItems.splice(i, 1);
-  //     i--;
-  //   }
-  // }
-  //
-  // newItems.sort();
-  // newItems.forEach(function(item, index) {
-  //   if (legendItems.indexOf(item) == -1)  {
-  //     addLegendSection(item, $('#legend'));
-  //     legendItems.push(item);
-  //   }
-  // });
 };
 
 
@@ -319,9 +221,6 @@ var updateItemSection = function(barElement, itemName, percent) {
   var className = classNameMap[itemName];
   var color = colorMap[itemMap[itemName]];
 
-
-  // if (!elem.height() && !percent)
-  //   return;
   var $element = barElement.find('.' + className);
   $element.height((percent * 100) + '%');
   $element.find('.graph-bar-section-inner').hover(
@@ -336,7 +235,6 @@ var updateItemSection = function(barElement, itemName, percent) {
       removeTooltip($(this));
     }
   );
-
 
   return $element;
 };
@@ -523,12 +421,7 @@ var lockBar = function(index, itemName, $tooltipLock) {
   else
     $tooltipLock.removeClass('fa-unlock-alt').addClass('fa-lock');
 
-
-  ///////////////////////////////////
-  // TODO get new data from server //
-  ///////////////////////////////////
-
-  updateGraph();
+  app.getNewData();
 };
 
 // /**
@@ -599,11 +492,11 @@ var removeTooltip = function(elem) {
  * @returns {string} text color
  */
 var getTextColor = function(color) {
- 	var r = parseInt(color.substr(1,2),16);
- 	var g = parseInt(color.substr(3,2),16);
- 	var b = parseInt(color.substr(5,2),16);
- 	var yiq = ((r*299)+(g*587)+(b*114))/1000;
- 	return (yiq >= 158) ? 'black' : 'white';
+  var r = parseInt(color.substr(1,2),16);
+  var g = parseInt(color.substr(3,2),16);
+  var b = parseInt(color.substr(5,2),16);
+  var yiq = ((r*299)+(g*587)+(b*114))/1000;
+  return (yiq >= 158) ? 'black' : 'white';
 };
 
 app.getNewData = function(){
@@ -617,13 +510,19 @@ app.getNewData = function(){
       }
     }
   }).filter(Boolean);
-  $.get('/singleItemData', params)
-    .done(function(singleItemData){
-      data[0] = singleItemData.singleItemData511;
-      data[1] = singleItemData.singleItemData514;
-      resetGraph();
-      updateGraph();
-    });
+
+  var ajaxPromise;
+  if (params.lockedBars.length === 0) {
+    ajaxPromise = $.get('/data');
+  } else {
+    ajaxPromise = $.get('/singleItemData', params);
+  }
+
+  ajaxPromise.done(function(itemData){
+    data[0] = itemData.itemData511;
+    data[1] = itemData.itemData514;
+    updateGraph();
+  });
 }
 
 $(window).load(function() {
@@ -658,8 +557,8 @@ $(window).load(function() {
   $('#champion-select').selectize({placeholder: 'Choose a champion...'});
 
   $.get('/data', function(matchData) {
-    data[0] = matchData.matchItemData511;
-    data[1] = matchData.matchItemData514;
+    data[0] = matchData.itemData511;
+    data[1] = matchData.itemData514;
     updateGraph();
   });
 });

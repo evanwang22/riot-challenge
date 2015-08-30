@@ -1,5 +1,6 @@
 import requests
 import sys
+import time
 from pymongo import MongoClient
 
 NUM_MATCH_IDS = 1000
@@ -122,8 +123,9 @@ def seed(match_ids):
                     match_json = match_request.json()
                     break
                 except:
-                  print "Unexpected error:", sys.exc_info()[0]
+                  print "API error:", sys.exc_info()[0]
                   print match_request
+                  time.sleep(0.5)
 
             # get list of participants
             match_participants = match_json['participants']
@@ -174,13 +176,15 @@ def seed(match_ids):
                     if item_name in item_list and item_name not in data_object['items']:
                         data_object['items'].append(item_name);
 
-            player_data_list = [ data_object for data_object in data_object_map.values() ]
+            # player_data_list = [ data_object for data_object in data_object_map.values() ]
 
             client = MongoClient()
             db = client['riot_challenge']
-
             match_data = db['514']
-            match_data.insert_one({ 'players': player_data_list })
+
+            for data_object in data_object_map.values():
+                match_data.insert_one(data_object)
+
         except KeyError:
             print "Unexpected error:", sys.exc_info()[0]
 
