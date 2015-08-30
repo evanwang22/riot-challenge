@@ -27,10 +27,10 @@ body {
   height: 100%; }
 
 #header {
-  position: fixed;
+  position: absolute;
   top: 0;
   height: 40px;
-  z-index: 1;
+  z-index: 2;
   line-height: 40px;
   font-size: 24px;
   color: white;
@@ -157,10 +157,15 @@ body {
     height: 100%; }
   #graph-area .graph-bar-section {
     position: relative;
-    -webkit-transition: height 333ms;
-    -moz-transition: height 333ms;
-    -o-transition: height 333ms;
-    transition: height 333ms; }
+    -webkit-transition: height 333ms, opacity 333ms;
+    -moz-transition: height 333ms, opacity 333ms;
+    -o-transition: height 333ms, opacity 333ms;
+    transition: height 333ms, opacity 333ms; }
+  #graph-area .graph-bar-section.Other {
+    opacity: 0; }
+    #graph-area .graph-bar-section.Other .graph-bar-section-inner {
+      background: #dddddd;
+      border-color: #dddddd; }
   #graph-area .graph-bar-section-inner {
     position: absolute;
     top: 5px;
@@ -172,12 +177,14 @@ body {
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
-    -webkit-transition: box-shadow 333ms, opacity 333ms, background-color 333ms, border-color 333ms;
-    -moz-transition: box-shadow 333ms, opacity 333ms, background-color 333ms, border-color 333ms;
-    -o-transition: box-shadow 333ms, opacity 333ms, background-color 333ms, border-color 333ms;
-    transition: box-shadow 333ms, opacity 333ms, background-color 333ms, border-color 333ms;
+    -webkit-transition: box-shadow 333ms, opacity 333ms, background 333ms, border-color 333ms;
+    -moz-transition: box-shadow 333ms, opacity 333ms, background 333ms, border-color 333ms;
+    -o-transition: box-shadow 333ms, opacity 333ms, background 333ms, border-color 333ms;
+    transition: box-shadow 333ms, opacity 333ms, background 333ms, border-color 333ms;
     cursor: pointer;
     opacity: .8; }
+  #graph-area .graph-bar-section-inner.permanent {
+    opacity: .5; }
   #graph-area .graph-bar-section-inner.focused {
     opacity: 1; }
   #graph-area .graph-bar-section-inner-shadow {

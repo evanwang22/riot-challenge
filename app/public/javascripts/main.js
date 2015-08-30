@@ -10,6 +10,12 @@ var newItems;
 var patch = '5.14';
 // Holds the data
 var data = [];
+// Holds the bar data from previous graph
+var oldBarData = [];
+// Holds the bar data totals from previous graph
+var oldBarDataTotals = [0, 0, 0, 0, 0, 0];
+// Keeps track of locked item
+var lockedItem;
 
 var app = {
   state: {
@@ -28,11 +34,16 @@ var tooltipTimer;
 // Tracking variable for tooltip delay
 var hover = false;
 
+var ADD = 1;
+var UPDATE = 2;
+var REMOVE = 3;
+
+
 var resetGraph = function() {
   $('.graph-bar').children().remove();
   $('#legend').find('.legend-section').remove();
   legendItems = [];
-  lockedBars = [null, null, null, null, null, null];
+//  app.state.lockedBars = [null, null, null, null, null, null];
 
 }
 
@@ -41,135 +52,216 @@ var resetGraph = function() {
  * @param {object} data - new graph data
  */
 var updateGraph = function() {
-  var barData = (patch == '5.11' ? data[0] : data[1]);
+  var newBarData = (patch == '5.11' ? data[0] : data[1]);
+  var barSectionMapList = [{}, {}, {}, {}, {}, {}];
+  var barDataTotals = [0, 0, 0, 0, 0, 0];
+  var legendSectionList = [];
 
-  // Reset new items map
-  newItems = [];
+  // 1. Loop through all items
+  // 2. Skip ignored items
+  // 3. Track what to do with each item in each bar
+  // 4. Gather new bar data totals
+  Object.keys(itemMap).forEach(function(item, itemIndex) {
+    // If no champion, skip any non-AP items
+    if (!app.state.champion && itemMap[item] != 'AP')
+      return;
 
-  // Keep track of total number of data points for each bar
-  var totals = [0, 0, 0, 0, 0, 0];
-
-  barData.forEach(function(bar, barIndex) {
-    for (var item in bar) {
-      // Skip if item category hidden
-      // TODO category removal
-      if (!categoryMap[itemCategoryMap[item]])
-        continue;
-
-      totals[barIndex] += bar[item];
-    }
-  });
-
-  // Create/update/remove graph sections
-  // Needed totals to properly size sections
-  var graph = $('#graph');
-  barData.forEach(function(bar, barIndex) {
-
-    // Sort keys (items) by category and size.
-    var keys = Object.keys(bar);
-    keys.sort(function(a, b) {
-      // if (categoryOrder.indexOf(itemCategoryMap[a]) < categoryOrder.indexOf(itemCategoryMap[b]))
-      //   return -1;
-      // else if (categoryOrder.indexOf(itemCategoryMap[a]) > categoryOrder.indexOf(itemCategoryMap[b]))
-      //   return 1;
-      // else
-        return bar[a] < bar[b] ? 1 : (bar[a] > bar[b] ? -1 : 0);
+    newBarData.forEach(function(newBar, newBarIndex) {
+      if (newBar.hasOwnProperty(item) && newBar[item]) {
+        barSectionMapList[newBarIndex][item] = 1;
+        barDataTotals[newBarIndex] += newBar[item];
+      }
     });
 
+    oldBarData.forEach(function(oldBar, oldBarIndex) {
+      if (oldBar.hasOwnProperty(item) && oldBar[item] / oldBarDataTotals[oldBarIndex] > .03 ) {
+        barSectionMapList[oldBarIndex][item] = barSectionMapList[oldBarIndex][item] ? 2 : 3;
+      }
+    });
+  });
 
+  // Create, update, and remove graph sections
+  var graph = $('#graph');
+  barSectionMapList.forEach(function(barSectionMap, barIndex) {
+    var barData = newBarData[barIndex];
+    var barElement = graph.find('#bar-' + barIndex);
 
-    var barElement = $('#graph').find('#bar-' + barIndex);
+    var itemKeys = Object.keys(barSectionMap);
+    itemKeys.sort(function(a, b) {
+      return barData[a] < barData[b] ? 1 : (barData[a] > barData[b] ? -1 : 0);
+    });
+
     var otherPercent = 0;
-    // Update/add bar sections
-    for (var i = 0; i < keys.length; i++) {
-      var item = keys[i];
-
-      var percent = bar[item] / totals[barIndex];
-
-      // Set percent to 0 here to properly hide sections
-      // TODO category removal
-      if (!categoryMap[itemCategoryMap[item]])
-        percent = 0;
-
-      // If less than 3%, group with Other
-      if (percent < .03) {
-        otherPercent += percent;
-        percent = 0;
+    itemKeys.forEach(function(item, itemIndex) {
+      var itemAction = barSectionMap[item];
+      var itemPercent;
+      switch (itemAction) {
+        case ADD:
+          itemPercent = barData[item] / barDataTotals[barIndex];
+          if (itemPercent > .03) {
+            addItemSection(barElement, item, itemPercent);
+            if (legendSectionList.indexOf(item) == -1)
+              legendSectionList.push(item);
+          }
+          else
+            otherPercent += itemPercent;
+          break;
+        case UPDATE:
+          itemPercent = barData[item] / barDataTotals[barIndex];
+          if (itemPercent > .03) {
+            var element = updateItemSection(barElement, item, itemPercent);
+            if (app.state.lockedBars[barIndex] && app.state.lockedBars[barIndex] == item)
+              element.find('.graph-bar-section-inner').addClass('permanent');
+            if (legendSectionList.indexOf(item) == -1)
+              legendSectionList.push(item);
+          }
+          else {
+            otherPercent += itemPercent;
+            removeItemSection(barElement, item);
+          }
+          break;
+        case REMOVE:
+          removeItemSection(barElement, item);
+          break;
+        default:
+          break;
       }
+    });
 
-      // Update section if it already exists
-      $barSectionElement = barElement.find('.' + classNameMap[item]);
-      if (!$barSectionElement.length && percent)
-        $barSectionElement = addItemSection(item, percent, barElement);
-      else
-        updateItemSection(item, percent, $barSectionElement);
-
-      $barSectionElement.find('.graph-bar-section-inner').css({'border-color': percent ? colorMap[itemCategoryMap[item]] : '#ffffff',
-                                                                 'background-color': percent ? colorMap[itemCategoryMap[item]] : '#ffffff'});
-
-
-      if (percent > 0) {
-        // Check for locked bar item
-        if (app.state.lockedBars[barIndex] && app.state.lockedBars[barIndex] == item)
-          $barSectionElement.find('.graph-bar-section-inner').addClass('permanent');
-
-        if (newItems.indexOf(item) == -1)
-          newItems.push(item);
-      }
-    }
-
-    $otherSectionElement = barElement.find('.Other');
-    if ($otherSectionElement.length) {
-      $otherSectionElement.parent().prepend($otherSectionElement[0]);
-      updateItemSection("Other", otherPercent, $otherSectionElement);
-      $otherSectionElement.find('.graph-bar-section-inner').css({'border-color': otherPercent ? colorMap[itemCategoryMap['Other']] : '#ffffff',
-                                                                 'background-color': otherPercent ? colorMap[itemCategoryMap['Other']] : '#ffffff'});
-    }
-
-    // Otherwise, create new bar and legend sections
-    else if (otherPercent) {
-      addItemSection('Other', otherPercent, barElement);
-      if (!$('#legend').find('.Other').length)
-        addLegendSection('Other', $('#legend'));
-    }
-
+    updateOtherSection(barElement, otherPercent);
   });
 
-
-
-
-  // Remove bar and legend sections for
-  // items that are no longer present (following a graph update)
-  for (var i = 0; i < legendItems.length; i++) {
-    var item = legendItems[i];
-    if (newItems.indexOf(item) == -1) {
-      $('#legend .' + classNameMap[item]).parent().remove();
-      legendItems.splice(i, 1);
-      i--;
-    }
-  }
-
-  newItems.sort();
-  newItems.forEach(function(item, index) {
-    if (legendItems.indexOf(item) == -1)  {
-      addLegendSection(item, $('#legend'));
-      legendItems.push(item);
+  $('#legend').find('.legend-section').remove();
+  legendSectionList.push('Other');
+  legendSectionList.sort(function(a, b) {
+    if (a == 'Other') return -1;
+    if (b == 'Other') return 1;
+    else {
+      return a < b ? -1 : (a > b ? 1 : 0);
     }
   });
+  legendSectionList.forEach(function(legendSection, index) {
+    addLegendSection(legendSection);
+  });
+
+  oldBarData = newBarData;
+  oldBarDataTotals = barDataTotals;
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  // barData.forEach(function(bar, barIndex) {
+  //
+  //   // Sort keys (items) by category and size.
+  //   var keys = Object.keys(bar);
+  //   keys.sort(function(a, b) {
+  //     // if (categoryOrder.indexOf(itemCategoryMap[a]) < categoryOrder.indexOf(itemCategoryMap[b]))
+  //     //   return -1;
+  //     // else if (categoryOrder.indexOf(itemCategoryMap[a]) > categoryOrder.indexOf(itemCategoryMap[b]))
+  //     //   return 1;
+  //     // else
+  //       return bar[a] < bar[b] ? 1 : (bar[a] > bar[b] ? -1 : 0);
+  //   });
+  //
+  //
+  //
+  //   var barElement = $('#graph').find('#bar-' + barIndex);
+  //   var otherPercent = 0;
+  //   // Update/add bar sections
+  //   for (var i = 0; i < keys.length; i++) {
+  //     var item = keys[i];
+  //
+  //     var percent = bar[item] / totals[barIndex];
+  //
+  //     // Set percent to 0 here to properly hide sections
+  //     // TODO category removal
+  //     if (!categoryMap[itemCategoryMap[item]])
+  //       percent = 0;
+  //
+  //     // If less than 3%, group with Other
+  //     if (percent < .03) {
+  //       otherPercent += percent;
+  //       percent = 0;
+  //     }
+  //
+  //     // Update section if it already exists
+  //     $barSectionElement = barElement.find('.' + classNameMap[item]);
+  //     if (!$barSectionElement.length && percent)
+  //       $barSectionElement = addItemSection(item, percent, barElement);
+  //     else
+  //       updateItemSection(item, percent, $barSectionElement);
+  //
+  //     $barSectionElement.find('.graph-bar-section-inner').css({'border-color': percent ? colorMap[itemCategoryMap[item]] : '#ffffff',
+  //                                                                'background-color': percent ? colorMap[itemCategoryMap[item]] : '#ffffff'});
+  //
+  //
+  //     if (percent > 0) {
+  //       // Check for locked bar item
+  //       if (app.state.lockedBars[barIndex] && app.state.lockedBars[barIndex] == item)
+  //         $barSectionElement.find('.graph-bar-section-inner').addClass('permanent');
+  //
+  //       if (newItems.indexOf(item) == -1)
+  //         newItems.push(item);
+  //     }
+  //   }
+  //
+  //   $otherSectionElement = barElement.find('.Other');
+  //   if ($otherSectionElement.length) {
+  //     $otherSectionElement.parent().prepend($otherSectionElement[0]);
+  //     updateItemSection("Other", otherPercent, $otherSectionElement);
+  //     $otherSectionElement.find('.graph-bar-section-inner').css({'border-color': otherPercent ? colorMap[itemCategoryMap['Other']] : '#ffffff',
+  //                                                                'background-color': otherPercent ? colorMap[itemCategoryMap['Other']] : '#ffffff'});
+  //   }
+  //
+  //   // Otherwise, create new bar and legend sections
+  //   else if (otherPercent) {
+  //     addItemSection('Other', otherPercent, barElement);
+  //     if (!$('#legend').find('.Other').length)
+  //       addLegendSection('Other', $('#legend'));
+  //   }
+  //
+  // });
+  //
+  //
+  //
+  //
+  // // Remove bar and legend sections for
+  // // items that are no longer present (following a graph update)
+  // for (var i = 0; i < legendItems.length; i++) {
+  //   var item = legendItems[i];
+  //   if (newItems.indexOf(item) == -1) {
+  //     $('#legend .' + classNameMap[item]).parent().remove();
+  //     legendItems.splice(i, 1);
+  //     i--;
+  //   }
+  // }
+  //
+  // newItems.sort();
+  // newItems.forEach(function(item, index) {
+  //   if (legendItems.indexOf(item) == -1)  {
+  //     addLegendSection(item, $('#legend'));
+  //     legendItems.push(item);
+  //   }
+  // });
 };
 
 
 /**
  * Creates new graph bar section for an item
  *
+ * @param {jQueryObject} barElement - bar element to add new section to
  * @param {string} itemName - full name of item
  * @param {number} percent - percent of bar height new section should take
- * @param {jQueryObject} parent - element to add new section to
  * @returns {jQueryObject} graph bar section
  */
-var addItemSection = function(itemName, percent, parent) {
+var addItemSection = function(barElement, itemName, percent) {
   var className = classNameMap[itemName];
-  var color = colorMap[itemCategoryMap[itemName]];
+  var color = colorMap[itemMap[itemName]];
 
   // Create outer element
   var $outer = $('<div>', {class: "graph-bar-section " + className});
@@ -180,8 +272,14 @@ var addItemSection = function(itemName, percent, parent) {
   $inner.css('background-color', color);
   $inner.css('border-color', color);
 
+
   var $innerShadow = $('<div>', {class: "graph-bar-section-inner-shadow"});
   $inner.append($innerShadow);
+
+  if (lockedItem == itemName) {
+    $inner.addClass('locked');
+    $innerShadow.addClass('locked');
+  }
 
   // Add event handlers
   $inner.hover(
@@ -197,11 +295,11 @@ var addItemSection = function(itemName, percent, parent) {
     }
   );
   $inner.click(function() {
-    lockItem($(this), className, color);
+    lockItem($(this), itemName, color);
   });
 
   $outer.append($inner);
-  parent.prepend($outer);
+  barElement.find('.Other').after($outer);
 
   // flush the style so it animates properly
   window.getComputedStyle($outer[0]).height;
@@ -212,22 +310,21 @@ var addItemSection = function(itemName, percent, parent) {
 /**
  * Updates graph bar section for an item
  *
+ * @param {jQueryObject} barElement - bar element to update section for
  * @param {string} itemName - full name of item
  * @param {number} percent - percent of bar height new section should take
- * @param {jQueryObject} element - element to update
  * @returns {jQueryObject} graph bar section
  */
-var updateItemSection = function(itemName, percent, elem) {
-
-
-  if (!elem.height() && !percent)
-    return;
+var updateItemSection = function(barElement, itemName, percent) {
   var className = classNameMap[itemName];
-  var color = colorMap[itemCategoryMap[itemName]];
+  var color = colorMap[itemMap[itemName]];
 
-  elem.height((percent * 100) + '%');
 
-  elem.find('.graph-bar-section-inner').hover(
+  // if (!elem.height() && !percent)
+  //   return;
+  var $element = barElement.find('.' + className);
+  $element.height((percent * 100) + '%');
+  $element.find('.graph-bar-section-inner').hover(
     function() {
       hover = true;
       focusItem(className, color);
@@ -238,7 +335,66 @@ var updateItemSection = function(itemName, percent, elem) {
       unfocusItem(className);
       removeTooltip($(this));
     }
-  );};
+  );
+
+
+  return $element;
+};
+
+/**
+ * Removes graph bar section for an item
+ *
+ * @param {jQueryObject} barElement - bar element to update section for
+ * @param {string} itemName - full name of item
+ * @returns {jQueryObject} graph bar section
+ */
+var removeItemSection = function(barElement, itemName) {
+  var className = classNameMap[itemName];
+
+  var $element = barElement.find('.' + className);
+  $element.one('webkitTransitionEnd otransitionend msTransitionEnd transitionend',
+     function() {
+       $(this).remove();
+     });
+  $element.css({'height': 0, 'opacity': .5});
+
+};
+
+
+/**
+ * Updates other bar section
+ *
+ * @param {jQueryObject} barElement - bar element to update section for
+ * @param {number} percent - percent of bar height new section should take
+ * @returns {jQueryObject} graph bar section
+ */
+var updateOtherSection = function(barElement, percent) {
+  var $element = barElement.find('.Other');
+  var color = colorMap[itemMap['Other']];
+  if (percent) {
+    $element.css({'height': (percent * 100) + '%', 'opacity': 1});
+    $element.find('.graph-bar-section-inner').hover(
+      function() {
+        hover = true;
+        focusItem('Other', color);
+        createTooltip($(this), 'Other', percent);
+      },
+      function() {
+        hover = false;
+        unfocusItem('Other');
+        removeTooltip($(this));
+      }
+    ).click(function() {
+      lockItem($(this), 'Other', color);
+    });
+  }
+  else {
+    $element.css({'height': 0, 'opacity': 0});
+    $element.off('hover');
+  }
+
+  return $element;
+};
 
 
 /**
@@ -255,15 +411,14 @@ var addLegendSection = function(itemName, parent) {
   var $section = $('<div>', {class: "legend-section"});
   $section.css({'opacity': 0});
 
-
-  var color = colorMap[itemCategoryMap[itemName]];
+  var color = colorMap[itemMap[itemName]];
   // Add event handlers
   $section.hover(
     function() {focusItem(className, color)},
     function() {unfocusItem(className, color)}
   );
   $section.click(function() {
-    lockItem($(this).find('.legend-section-text'), className, color);
+    lockItem($(this).find('.legend-section-text'), itemName, color);
   });
 
   // Create swatch element
@@ -278,8 +433,13 @@ var addLegendSection = function(itemName, parent) {
   var $text = $('<div>', {class: "legend-section-text " + className});
   $text.html(itemName);
 
+  if (lockedItem == itemName) {
+    $text.addClass('locked');
+    $text.css({'border-color': color});
+  }
+
   $section.append($image).append($text);
-  parent.append($section);
+  $('#legend').append($section);
 
   // Fade in new sections
   window.getComputedStyle($section[0]).opacity;
@@ -323,10 +483,11 @@ var unfocusItem = function(className) {
  * Toggles the lock on bar and legend sections with the given class name
  *
  * @param {jQueryObject} elem - element triggering the lock
- * @param {string} className - class name to lock
+ * @param {string} itemName - item to lock
  * @param {string} color - color of locked items
  */
-var lockItem = function(elem, className, color) {
+var lockItem = function(elem, itemName, color) {
+  var className = classNameMap[itemName];
   var locked = elem.hasClass('locked');
 
   $('#graph .locked').removeClass('locked');
@@ -335,6 +496,7 @@ var lockItem = function(elem, className, color) {
       $(this).css({'border-color': '#ffffff'});
   });
   $('#legend .locked').removeClass('locked');
+  lockedItem = null;
 
 
   if (!locked) {
@@ -342,6 +504,7 @@ var lockItem = function(elem, className, color) {
     $('#graph .' + className + ' .graph-bar-section-inner-shadow').addClass('locked');
     $('#legend .' + className).addClass('locked');
     $('#legend .' + className).css({'border-color': color});
+    lockedItem = itemName;
   }
 };
 
@@ -458,6 +621,7 @@ app.getNewData = function(){
     .done(function(singleItemData){
       data[0] = singleItemData.singleItemData511;
       data[1] = singleItemData.singleItemData514;
+      resetGraph();
       updateGraph();
     });
 }

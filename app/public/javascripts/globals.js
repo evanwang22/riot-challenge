@@ -1,5 +1,5 @@
 // Map of items to categories
-var itemCategoryMap = {
+var itemMap = {
   "Abyssal Scepter" : "AP",
   "Archangel's Staff" : "AP",
   "Ardent Censer" : "AP",
@@ -84,7 +84,7 @@ var itemCategoryMap = {
 
 // Map of item names to class names
 var classNameMap = {};
-Object.keys(itemCategoryMap).forEach(function(item, itemIndex) {
+Object.keys(itemMap).forEach(function(item, itemIndex) {
   classNameMap[item] = item.replace(/\s|'|\(|\)|:/g, "");
 });
 
@@ -271,4 +271,3 @@ var championList = [
   "Zilean",
   "Zyra"
 ];
-
