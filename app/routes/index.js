@@ -19,7 +19,7 @@ router.get('/data', function(req, res, next) {
     var data = values.map(function(docs){
       return buildMatchData(docs);
     });
-    res.json({ matchItemData511: data[0], matchItemData514: data[1] });
+    res.json({ itemData511: data[0], itemData514: data[1] });
   });
 });
 
@@ -50,7 +50,7 @@ router.get('/singleItemData', function(req, res, next) {
     var data = values.map(function(docs){
       return buildMatchData(docs);
     });
-    res.json({ singleItemData511: data[0], singleItemData514: data[1] });
+    res.json({ itemData511: data[0], itemData514: data[1] });
   });
 
 });

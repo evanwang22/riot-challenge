@@ -454,12 +454,18 @@ app.getNewData = function(){
     }
   }).filter(Boolean);
 
-  $.get('/singleItemData', params)
-    .done(function(singleItemData){
-      data[0] = singleItemData.singleItemData511;
-      data[1] = singleItemData.singleItemData514;
-      updateGraph();
-    });
+  var ajaxPromise;
+  if (params.lockedBars.length === 0) {
+    ajaxPromise = $.get('/data');
+  } else {
+    ajaxPromise = $.get('/singleItemData', params);
+  }
+
+  ajaxPromise.done(function(itemData){
+    data[0] = itemData.itemData511;
+    data[1] = itemData.itemData514;
+    updateGraph();
+  });
 }
 
 $(window).load(function() {
@@ -494,8 +500,8 @@ $(window).load(function() {
   $('#champion-select').selectize({placeholder: 'Choose a champion...'});
 
   $.get('/data', function(matchData) {
-    data[0] = matchData.matchItemData511;
-    data[1] = matchData.matchItemData514;
+    data[0] = matchData.itemData511;
+    data[1] = matchData.itemData514;
     updateGraph();
   });
 });
