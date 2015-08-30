@@ -4,23 +4,28 @@ var colorCount = 0;
 //var colorMap = {"Other" : "#757575"};
 // Keeps track of current items shown in the legend
 var legendItems = [];
-// Keeps track of new items (following a graph update) to compare against old ('current') items
-var newItems;
-// Keeps track of patch to show data for
-var patch = '5.14';
-// Holds the data
-var data = [];
-// Holds the bar data from previous graph
-var oldBarData = [];
-// Holds the bar data totals from previous graph
-var oldBarDataTotals = [0, 0, 0, 0, 0, 0];
+
 // Keeps track of locked item
 var lockedItem;
 
 var app = {
   state: {
+    patch: '5.14',
+    data: [],
+    dataTotals: [0, 0, 0, 0, 0, 0],
+    barSectionMaps: [{}, {}, {}, {}, {}, {}],
     champion: null,
-    lockedBars: [null, null, null, null, null, null]
+    lockedBars: [null, null, null, null, null, null],
+    legendSections: []
+  },
+  prevState: {
+    patch: '5.14',
+    data: [[], []],
+    dataTotals: [0, 0, 0, 0, 0, 0],
+    barSectionMaps: [{}, {}, {}, {}, {}, {}],
+    champion: null,
+    lockedBars: [null, null, null, null, null, null],
+    legendSections: []
   }
 };
 
@@ -52,37 +57,41 @@ var resetGraph = function() {
  * @param {object} data - new graph data
  */
 var updateGraph = function() {
-  var newBarData = (patch == '5.11' ? data[0] : data[1]);
-  var barSectionMapList = [{}, {}, {}, {}, {}, {}];
-  var barDataTotals = [0, 0, 0, 0, 0, 0];
-  var legendSectionList = [];
+  var newBarData = (app.state.patch == '5.11' ? app.state.data[0] : app.state.data[1]);
+  var oldBarData = (app.prevState.patch == '5.11' ? app.prevState.data[0] : app.prevState.data[1]);
+
+  app.state.dataTotals = [0, 0, 0, 0, 0, 0];
+  app.state.barSectionMaps = [{}, {}, {}, {}, {}, {}];
+  app.state.legendSections = [];
 
   // 1. Loop through all items
   // 2. Skip ignored items
   // 3. Track what to do with each item in each bar
   // 4. Gather new bar data totals
   Object.keys(itemMap).forEach(function(item, itemIndex) {
+
     // If no champion, skip any non-AP items
-    if (!app.state.champion && itemMap[item] != 'AP')
-      return;
+    if (app.state.champion || itemMap[item] == 'AP') {
+      newBarData.forEach(function(newBar, newBarIndex) {
+        if (newBar[item]) {
+          app.state.barSectionMaps[newBarIndex][item] = 1;
+          app.state.dataTotals[newBarIndex] += newBar[item];
+        }
+      });
+    }
 
-    newBarData.forEach(function(newBar, newBarIndex) {
-      if (newBar.hasOwnProperty(item) && newBar[item]) {
-        barSectionMapList[newBarIndex][item] = 1;
-        barDataTotals[newBarIndex] += newBar[item];
-      }
-    });
-
-    oldBarData.forEach(function(oldBar, oldBarIndex) {
-      if (oldBar.hasOwnProperty(item) && oldBar[item] / oldBarDataTotals[oldBarIndex] > .03 ) {
-        barSectionMapList[oldBarIndex][item] = barSectionMapList[oldBarIndex][item] ? 2 : 3;
-      }
-    });
+    if (app.prevState.champion || itemMap[item] == 'AP') {
+      oldBarData.forEach(function(oldBar, oldBarIndex) {
+        if (oldBar.hasOwnProperty(item) && oldBar[item] / app.prevState.dataTotals[oldBarIndex] > .03 ) {
+          app.state.barSectionMaps[oldBarIndex][item] = app.state.barSectionMaps[oldBarIndex][item] ? 2 : 3;
+        }
+      });
+    }
   });
 
   // Create, update, and remove graph sections
   var graph = $('#graph');
-  barSectionMapList.forEach(function(barSectionMap, barIndex) {
+  app.state.barSectionMaps.forEach(function(barSectionMap, barIndex) {
     var barData = newBarData[barIndex];
     var barElement = graph.find('#bar-' + barIndex);
 
@@ -97,23 +106,23 @@ var updateGraph = function() {
       var itemPercent;
       switch (itemAction) {
         case ADD:
-          itemPercent = barData[item] / barDataTotals[barIndex];
+          itemPercent = barData[item] / app.state.dataTotals[barIndex];
           if (itemPercent > .03) {
             addItemSection(barElement, item, itemPercent);
-            if (legendSectionList.indexOf(item) == -1)
-              legendSectionList.push(item);
+            if (app.state.legendSections.indexOf(item) == -1)
+              app.state.legendSections.push(item);
           }
           else
             otherPercent += itemPercent;
           break;
         case UPDATE:
-          itemPercent = barData[item] / barDataTotals[barIndex];
+          itemPercent = barData[item] / app.state.dataTotals[barIndex];
           if (itemPercent > .03) {
             var element = updateItemSection(barElement, item, itemPercent);
             if (app.state.lockedBars[barIndex] && app.state.lockedBars[barIndex] == item)
               element.find('.graph-bar-section-inner').addClass('permanent');
-            if (legendSectionList.indexOf(item) == -1)
-              legendSectionList.push(item);
+            if (app.state.legendSections.indexOf(item) == -1)
+              app.state.legendSections.push(item);
           }
           else {
             otherPercent += itemPercent;
@@ -131,20 +140,19 @@ var updateGraph = function() {
   });
 
   $('#legend').find('.legend-section').remove();
-  legendSectionList.push('Other');
-  legendSectionList.sort(function(a, b) {
+  app.state.legendSections.push('Other');
+  app.state.legendSections.sort(function(a, b) {
     if (a == 'Other') return -1;
     if (b == 'Other') return 1;
     else {
       return a < b ? -1 : (a > b ? 1 : 0);
     }
   });
-  legendSectionList.forEach(function(legendSection, index) {
+  app.state.legendSections.forEach(function(legendSection, index) {
     addLegendSection(legendSection);
   });
 
-  oldBarData = newBarData;
-  oldBarDataTotals = barDataTotals;
+  app.prevState = JSON.parse(JSON.stringify(app.state));
 };
 
 
@@ -323,7 +331,10 @@ var addLegendSection = function(itemName, parent) {
 
   // Create text element
   var $text = $('<div>', {class: "legend-section-text " + className});
-  $text.html(itemName);
+  if (itemName == 'Other')
+    $text.html('Other (< 3% Popularity)');
+  else
+    $text.html(itemName);
 
   if (lockedItem == itemName) {
     $text.addClass('locked');
@@ -407,6 +418,9 @@ var lockItem = function(elem, itemName, color) {
  * @param {string} itemName - name of item to lock into slot
  */
 var lockBar = function(index, itemName, $tooltipLock) {
+  if (itemName == 'Other')
+    return;
+
   $('#bar-' + index).find('.permanent').removeClass('permanent');
   app.state.lockedBars[index] = app.state.lockedBars[index] == itemName ? null : itemName;
 
@@ -417,19 +431,6 @@ var lockBar = function(index, itemName, $tooltipLock) {
 
   app.getNewData();
 };
-
-// /**
-//  * Toggles visibility for a given item category
-//  *
-//  * @param {jQueryObject} elem - element triggering the toggle
-//  * @param {string} category - item category
-//  */
-// var toggleCategory = function(elem, category) {
-//   elem.toggleClass('visible');
-//
-//   categoryMap[category] = !categoryMap[category];
-//   updateGraph();
-// };
 
 /**
  * Creates tooltip on given element
@@ -447,8 +448,10 @@ var createTooltip = function(elem, itemName, percent) {
   var $tooltipText = $('<div>', {class: "tooltip-text"});
   $tooltipText.html((percent * 100).toFixed(1) + "%");
 
-  var $tooltipLock = $('<div>',
-    {class: "tooltip-lock fa " + (elem.hasClass('permanent') ? "fa-unlock-alt" : "fa-lock")});
+  var tooltipIcon = elem.hasClass('permanent') ? "fa-unlock-alt" : "fa-lock";
+  if (itemName == 'Other')
+    tooltipIcon = 'fa-ban';
+  var $tooltipLock = $('<div>', {class: "tooltip-lock fa " + tooltipIcon});
 
   var index = elem.parents('.graph-bar').attr('id').slice(-1);
   $tooltip.click(function(event) { event.stopPropagation(); lockBar(index, itemName, $tooltipLock);});
@@ -533,8 +536,8 @@ app.getNewData = function(){
   }
 
   ajaxPromise.done(function(itemData){
-    data[0] = itemData.itemData511;
-    data[1] = itemData.itemData514;
+    app.state.data[0] = itemData.itemData511;
+    app.state.data[1] = itemData.itemData514;
     updateGraph();
   });
 }
@@ -552,15 +555,10 @@ $(window).load(function() {
     $(this).attr('data-position', position);
     $(this).find('.data-switch-fill').first().css('left', position == 'first' ? 0 : '50%');
 
-    patch = position == 'first' ? '5.11' : '5.14';
+    app.state.patch = position == 'first' ? '5.11' : '5.14';
 
     updateGraph();
   });
-
-  // $('#ap-selector-section').click(function() {toggleCategory($(this), 'AP')});
-  // $('#ad-selector-section').click(function() {toggleCategory($(this), 'AD')});
-  // $('#tank-selector-section').click(function() {toggleCategory($(this), 'Tank')});
-  // $('#misc-selector-section').click(function() {toggleCategory($(this), 'Miscellaneous')});
 
   // Populate dropdown options
   championList.forEach(function(champion, index) {
