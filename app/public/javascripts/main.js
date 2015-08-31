@@ -43,15 +43,6 @@ var ADD = 1;
 var UPDATE = 2;
 var REMOVE = 3;
 
-
-var resetGraph = function() {
-  $('.graph-bar').children().remove();
-  $('#legend').find('.legend-section').remove();
-  legendItems = [];
-//  app.state.lockedBars = [null, null, null, null, null, null];
-}
-
-
 /**
  * Updates graph based on new data
  * @param {object} data - new graph data
@@ -502,7 +493,10 @@ var getTextColor = function(color) {
  * @param {string} selector - selector for element to initialize selectize with
  */
 var initChampionSelectize = function(selector) {
-  $select = $(selector).selectize({placeholder: 'Choose a champion...'});
+  $select = $(selector).selectize({
+    placeholder: 'Choose a champion...',
+    plugins: ['remove_button']
+  });
   var selectize = $select[0].selectize;
 
   selectize.on('change', function(value){
