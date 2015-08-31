@@ -191,12 +191,12 @@ body {
     width: 100%;
     height: 100%;
     margin: -3px 0 0 -3px;
-    border: 3px solid rgba(0, 0, 0, 0);
+    border: 3px solid transparent;
     -webkit-transition: box-shadow 333ms;
     -moz-transition: box-shadow 333ms;
     -o-transition: box-shadow 333ms;
     transition: box-shadow 333ms; }
-  #graph-area .graph-bar-section-inner-shadow.focused:hover {
+  #graph-area .graph-bar-section-inner-shadow.focused {
     -webkit-box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.75);
     -moz-box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.75);
     box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.75); }
@@ -264,15 +264,21 @@ body {
       -moz-transition: box-shadow 333ms, opacity 333ms;
       -o-transition: box-shadow 333ms, opacity 333ms;
       transition: box-shadow 333ms, opacity 333ms; }
+      #legend-container #legend .legend-section .legend-section-swatch {
+        float: left;
+        width: calc(28px / 2);
+        height: 100%;
+        margin-right: 6px; }
       #legend-container #legend .legend-section .legend-section-image {
         float: left;
         width: 28px;
         height: 100%;
         background-size: cover;
-        background-color: #e0e0e0; }
+        background-color: #E0E0E0; }
       #legend-container #legend .legend-section .legend-section-text {
         float: left;
-        width: calc(100% - 28px - 12px);
+        /* width: calc(100% - 28px - 12px); // subtract image, swatch, swatch margin, padding, border (swatch currently excluded) */
+        width: calc(100% - 3 * 28px / 2 - 18px);
         height: calc(100% - 6px);
         padding: 0 3px;
         line-height: calc(28px - 6px);
@@ -280,7 +286,7 @@ body {
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
-        border: solid 3px white;
+        border: solid 3px #FFFFFF;
         -webkit-transition: color 333ms, background-color 333ms, border-color 333ms;
         -moz-transition: color 333ms, background-color 333ms, border-color 333ms;
         -o-transition: color 333ms, background-color 333ms, border-color 333ms;
@@ -309,7 +315,7 @@ body {
   position: relative;
   color: white;
   text-align: center;
-  background-color: #bdbdbd;
+  background-color: #BDBDBD;
   border-radius: 2px;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -350,7 +356,7 @@ body {
   height: 28px;
   z-index: 1;
   border-radius: 2px;
-  background-color: #bdbdbd;
+  background-color: #BDBDBD;
   overflow: hidden;
   -webkit-box-shadow: 0 0 3px 0px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 0 0 3px 0px rgba(0, 0, 0, 0.75);
@@ -364,19 +370,19 @@ body {
     width: 28px;
     height: 28px;
     background-size: cover;
-    background-color: #e0e0e0; }
+    background-color: #E0E0E0; }
   .tooltip .tooltip-text {
     float: left;
     width: 50px;
     margin-left: 2px;
-    color: white;
+    color: #FFFFFF;
     line-height: 28px;
     font-size: 16px;
     text-align: center; }
   .tooltip .tooltip-lock {
     float: left;
     width: 28px;
-    color: white;
+    color: #FFFFFF;
     line-height: 28px;
     font-size: 16px;
     text-align: center; }
@@ -388,3 +394,5 @@ body {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none; }
+
+/*# sourceMappingURL=output.css.map */

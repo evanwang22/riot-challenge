@@ -257,7 +257,7 @@ body {
     @include transition(box-shadow 333ms);
   }
 
-  .graph-bar-section-inner-shadow.focused:hover {
+  .graph-bar-section-inner-shadow.focused {
     @include box-shadow(0 0 4px 0px $boxShadow);
   }
 
@@ -352,13 +352,13 @@ body {
       @include disable-select();
       @include transition(box-shadow 333ms, opacity 333ms);
 
-      // .legend-section-swatch {
-      //   float: left;
-      //   width: calc(#{$legendSize} / 2);
-      //   height: 100%;
-      //
-      //   margin-right: 6px;
-      // }
+      .legend-section-swatch {
+        float: left;
+        width: calc(#{$legendSize} / 2);
+        height: 100%;
+
+        margin-right: 6px;
+      }
 
       .legend-section-image {
         float: left;
@@ -371,7 +371,7 @@ body {
 
       .legend-section-text {
         float: left;
-        width: calc(100% - #{$legendSize} - 12px); // subtract image, swatch, swatch margin, padding, border (swatch currently excluded)
+        width: calc(100% - 3 * #{$legendSize} / 2 - 18px); // subtract image, swatch, swatch margin, padding, border (swatch currently excluded)
         height: calc(100% - 6px); // subtract border
         padding: 0 3px;
 

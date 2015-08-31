@@ -157,7 +157,12 @@ var updateGraph = function() {
  */
 var addItemSection = function(barElement, itemName, percent) {
   var className = classNameMap[itemName];
-  var color = colorMap[itemMap[itemName]];
+  var color;
+  if (itemMap[itemName] === 'AP'){
+    color = apItemColorMap[itemName];
+  } else {
+    color = colorMap[itemMap[itemName]];
+  }
 
   // Create outer element
   var $outer = $('<div>', {class: "graph-bar-section " + className});
@@ -213,7 +218,13 @@ var addItemSection = function(barElement, itemName, percent) {
  */
 var updateItemSection = function(barElement, itemName, percent) {
   var className = classNameMap[itemName];
-  var color = colorMap[itemMap[itemName]];
+
+  var color;
+  if (itemMap[itemName] === 'AP'){
+    color = apItemColorMap[itemName];
+  } else {
+    color = colorMap[itemMap[itemName]];
+  }
 
   var $element = barElement.find('.' + className);
   $element.height((percent * 100) + '%');
@@ -302,7 +313,13 @@ var addLegendSection = function(itemName, parent) {
   var $section = $('<div>', {class: "legend-section"});
   $section.css({'opacity': 0});
 
-  var color = colorMap[itemMap[itemName]];
+  var color;
+  if (itemMap[itemName] === 'AP'){
+    color = apItemColorMap[itemName];
+  } else {
+    color = colorMap[itemMap[itemName]];
+  }
+
   // Add event handlers
   $section.hover(
     function() {focusItem(className, color)},
@@ -313,8 +330,8 @@ var addLegendSection = function(itemName, parent) {
   });
 
   // Create swatch element
-  // var $swatch = $('<div>', {class: "legend-section-swatch"});
-  // $swatch.css('background-color', colorMap[itemCategoryMap[itemName]]);
+  var $swatch = $('<div>', {class: "legend-section-swatch"});
+  $swatch.css('background-color', color);
 
   // Create image element
   var $image = $('<div>', {class: "legend-section-image"});
@@ -332,7 +349,7 @@ var addLegendSection = function(itemName, parent) {
     $text.css({'border-color': color});
   }
 
-  $section.append($image).append($text);
+  $section.append($swatch).append($image).append($text);
   $('#legend').append($section);
 
   // Fade in new sections
@@ -495,7 +512,9 @@ var getTextColor = function(color) {
 var initChampionSelectize = function(selector) {
   $select = $(selector).selectize({
     placeholder: 'Choose a champion...',
-    plugins: ['remove_button']
+    plugins: {
+      'remove_button': { label: 'Remove champion' }
+    }
   });
   var selectize = $select[0].selectize;
 

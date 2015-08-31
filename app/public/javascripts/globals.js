@@ -91,52 +91,57 @@ Object.keys(itemMap).forEach(function(item, itemIndex) {
 // TODO remove if unneeded
 // Available colors
 // Pulled from https://www.google.com/design/spec/style/color.html#color-color-palette
-// var colorList = [
-//   "#3F51B5", // Indigo
-//   "#2196F3", // Blue
-//   "#00BCD4", // Cyan
-//   "#009688", // Teal
-//   "#4CAF50", // Green
-//   "#8BC34A", // Light Green
-//   "#CDDC39", // Lime
-//   "#FFEB3B", // Yellow
-//   "#FFC107", // Amber
-//   "#FF9800", // Orange
-//   "#FF5722", // Deep Orange
-//   "#F44336", // Red
-//   "#E91E63", // Pink
-//   "#9C27B0", // Purple
-//   "#673AB7" // Deep Purple
-// ];
+var colorList = [
+  "#3F51B5", // Indigo
+  "#2196F3", // Blue
+  "#00BCD4", // Cyan
+  "#009688", // Teal
+  "#4CAF50", // Green
+  "#8BC34A", // Light Green
+  "#CDDC39", // Lime
+  "#FFEB3B", // Yellow
+  "#FFC107", // Amber
+  "#FF9800", // Orange
+  "#FF5722", // Deep Orange
+  "#F44336", // Red
+  "#E91E63", // Pink
+  "#9C27B0", // Purple
+  "#673AB7" // Deep Purple
+];
 
 // Map of category to color
 var colorMap = {
   "AP" : "#1E88E5",
   "AD" : "#F4511E",
-  "Tank" : "#43A047",
+  "Tank" : "#FFC107",
   "Miscellaneous" : "#5E35B1",
   "Other" : "#dddddd"
+}
 
-  // TODO clean out unused colors
-  // "AP" : "#173C79",
-  // "AD" : "#94724D",
-  // "Tank" : "#195657",
-  // "Miscellaneous" : "#332B50",
-
-  // "Other" : "#444444"
-  // "AP" : "#2D4CA0",
-  // "AD" : "#EE4B2D",
-  // "Tank" : "#21AE51",
-  // "Miscellaneous" : "#EEB02D",
-  // "Other" : "#444444"
-
-
-  // "AP" : "#3C6579",
-  // "AD" : "#3C6579",
-  // "Tank" : "#3C6579",
-  // "Miscellaneous" : "#3C6579",
-  // "Other" : "#eeeeee"
-
+var apItemColorMap = {
+  "Abyssal Scepter": "#2196F3",
+  "Ardent Censer": "#00BCD4",
+  "Athene's Unholy Grail": "#009688",
+  "Banner of Command": "#4CAF50",
+  "Frost Queen's Claim": "#8BC34A",
+  "Luden's Echo": "#2196F3",
+  "Morellonomicon": "#00BCD4",
+  "Nashor's Tooth": "#009688",
+  "Rabadon's Deathcap": "#4CAF50",
+  "Rod of Ages": "#8BC34A",
+  "Void Staff": "#2196F3",
+  "Zhonya's Hourglass": "#00BCD4",
+  "Sorcerer's Shoes": "#009688",
+  "Perfect Hex Core": "#4CAF50",
+  "Enchantment: Magus": "#8BC34A",
+  "Twin Shadows": "#2196F3",
+  "Liandry's Torment": "#00BCD4",
+  "Rylai's Crystal Scepter": "#009688",
+  "Enchantment: Runeglaive": "#4CAF50",
+  "Archangel's Staff": "#8BC34A",
+  "Will of the Ancients": "#2196F3",
+  "Mejai's Soulstealer": "#00BCD4",
+  "Lich Bane": "#009688",
 }
 
 // Order to display categories in
