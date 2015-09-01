@@ -1,0 +1,13 @@
+<ul>
+  <% items.forEach(function(item) { %>
+    <li>
+      <%= item[0] %>
+      <% if (greaterThanZero(item[1])) { %>
+        <span class="increase">(<%= (item[1] * 100).toFixed(2) %>)</span>
+      <% } else { %>
+        <span class="decrease">(<%= (item[1] * 100).toFixed(2) %>)</span>
+      <% } %>
+    </li>
+  <% }) %>
+</ul>
+

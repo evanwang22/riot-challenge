@@ -320,6 +320,52 @@ body {
   }
 }
 
+#analysis {
+  padding: 0 0 20px 50px;
+  width: calc(75% - 22px);
+}
+
+#patch-diff .diff-bar {
+  float: left;
+  width: calc(100% / 6);
+}
+
+.diff-bar ul {
+  list-style-type: none;
+}
+
+span.increase {
+  color: #4CAF50;
+  font-weight: 600;
+}
+
+span.decrease {
+  color: #F44336;
+  font-weight: 600;
+}
+
+.btn {
+  -webkit-border-radius: 5;
+  -moz-border-radius: 5;
+  border-radius: 5px;
+  color: #ffffff;
+  background: #4caf4f;
+  padding: 8px 16px 8px 16px;
+  text-decoration: none;
+  text-align: center;
+  width: 94px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #8bc34a;
+  text-decoration: none;
+}
+
+#analysis-ctrl {
+  padding: 0 50px 40px 50px;
+}
+
 #legend-container {
   float: left;
   width: calc(20% + 24px);

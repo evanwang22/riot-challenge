@@ -4,12 +4,13 @@
     <title><%= title %></title>
 
     <script src="../javascripts/jquery.min.js"></script>
+    <script src="../3rdParty/ejs_production.js"></script>
+    <script src="../3rdParty/lodash.min.js"></script>
     <script src="../javascripts/main.js"></script>
     <script src="../javascripts/globals.js"></script>
     <script src="../3rdParty/selectize/selectize.js"></script>
     <script src="../3rdParty/selectize/utils.js"></script>
     <script src="../3rdParty/selectize/plugins/remove_button.js"></script>
-    <script src="../3rdParty/lodash.min.js"></script>
     <link href="../3rdParty/selectize/selectize.default.css" rel="stylesheet" type="text/css">
     <link href="../3rdParty/selectize/plugins/remove_button.css" rel="stylesheet" type="text/css">
     <link href="../stylesheets/output.css" rel="stylesheet" type="text/css">
@@ -131,7 +132,6 @@
             <div id="champion-select-container">
               <select id="champion-select">
                 <option value=""></option>
-                <option value="">None</option>
               </select>
             </div>
             <div id="legend">
@@ -142,11 +142,31 @@
           </div>
         </div>
       </div>
+      
+      <div id='analysis-ctrl'>
+        <div id='btn-analysis' class='btn'>Show analysis</div>
+      </div>
 
-
-
-
-
+      <div id="analysis" class="row" style='display:none'>
+        <h2>Analysis: </h2>
+        <div id="win-rate">
+          <h3>Win rate</h3>
+          <div id="win-rate-text">
+            Lock an item to see win rates (Hint: Click the tooltip that appears when you hover over the graph).
+          </div>
+        </div>
+        <div id="patch-diff">
+          <h3>Largest changes between 5.11 and 5.14 for each position</h3>
+            <div id="patch-diff-area">
+              <div id="diff-0" class="diff-bar"></div>
+              <div id="diff-1" class="diff-bar"></div>
+              <div id="diff-2" class="diff-bar"></div>
+              <div id="diff-3" class="diff-bar"></div>
+              <div id="diff-4" class="diff-bar"></div>
+              <div id="diff-5" class="diff-bar"></div>
+            </div>
+        </div>
+      </div>
 
       <!-- Footer -->
       <div id="footer" class="row">

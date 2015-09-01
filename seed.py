@@ -117,7 +117,7 @@ def seed(match_ids):
 
             while api_tries < 10:
                 try:
-                    time.sleep(0.3)
+                    time.sleep(0.01)
                     match_URL = 'https://na.api.pvp.net/api/lol/na/v2.2/match/' + match_id
                     match_payload = {'api_key': api_keys[index%1], 'includeTimeline': True}
                     match_request = requests.get(match_URL, match_payload)
@@ -176,8 +176,6 @@ def seed(match_ids):
                     # TODO check for sightstone
                     if item_name in item_list and item_name not in data_object['items']:
                         data_object['items'].append(item_name);
-
-            # player_data_list = [ data_object for data_object in data_object_map.values() ]
 
             client = MongoClient()
             db = client['riot_challenge']

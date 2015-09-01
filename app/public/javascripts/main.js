@@ -12,6 +12,7 @@ var app = {
   state: {
     patch: '5.14',
     data: [],
+    winRate: [],
     dataTotals: [0, 0, 0, 0, 0, 0],
     barSectionMaps: [{}, {}, {}, {}, {}, {}],
     champion: null,
@@ -142,6 +143,8 @@ var updateGraph = function() {
   app.state.legendSections.forEach(function(legendSection, index) {
     addLegendSection(legendSection);
   });
+
+  updateAnalysis();
 
   app.prevState = JSON.parse(JSON.stringify(app.state));
 };
@@ -470,7 +473,7 @@ var createTooltip = function(elem, itemName, percent) {
 
   if (tooltipTimer) {
     clearTimeout(tooltipTimer);
-    tooltipTimer = null
+    tooltipTimer = null;
   }
   tooltipTimer = setTimeout(function() {
     if (hover) {
@@ -523,7 +526,91 @@ var initChampionSelectize = function(selector) {
     app.state.lockedBars = [null, null, null, null, null, null];
     app.getNewData();
   });
-}
+};
+
+var updateAnalysis = function(){
+  updateWinRate();
+
+  for (var i = 0; i < 6; i++) {
+    var listOfAllItems = _.union(_.keys(app.state.data[0][i]), _.keys(app.state.data[1][i]));
+
+    if (!app.state.champion) {
+      listOfAllItems = listOfAllItems.filter(function(item){
+        return itemMap[item] === 'AP';
+      });
+    }
+
+    var totals = app.state.data.map(function(patch){
+      var total = 0;
+      listOfAllItems.forEach(function(item){
+        total += patch[i][item] || 0;
+      });
+
+      return total;
+    });
+
+    var allItemDiffs = listOfAllItems.map(function(item){
+      var count511 = app.state.data[0][i][item] || 0;
+      var percent511 = count511/totals[0];
+
+      var count514 = app.state.data[1][i][item] || 0;
+      var percent514 = count514/totals[1];
+
+      var diff = percent514 - percent511;
+
+      return [item, diff];
+    });
+
+    var top5Diffs = _.takeRight(_.sortBy(allItemDiffs, function(itemDiff) {
+      return Math.abs(itemDiff[1]);
+    }), 5);
+
+    new EJS({ url: 'templates/diff_bar.ejs' }).update(
+      'diff-'+i, { items: top5Diffs.reverse() }
+    );
+  }
+};
+
+EJS.Helpers.prototype.greaterThanZero = function(number) {
+  return number > 0;
+};
+
+var updateWinRate = function(){
+  var anyItemLocked = app.state.lockedBars.some(function(item){
+    return !!item;
+  });
+
+  var text;
+  if (anyItemLocked) {
+    text = 'Win rate: ' +
+      (parseFloat(app.state.winRate[0]) * 100).toFixed(2) + '% (5.11) ' +
+      'and ' +
+      (parseFloat(app.state.winRate[1]) * 100).toFixed(2) + '% (5.14) ' +
+      'of summoners won when they built ';
+
+    var mapSlotsToOrdinals = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth'];
+
+    lockedItems = [];
+    app.state.lockedBars.forEach(function(item, index){
+      if (item) {
+        lockedItems.push(item + ' ' + mapSlotsToOrdinals[index]);
+      }
+    });
+    text += arrayToSentence(lockedItems);
+  } else {
+    text = 'Lock an item to see win rates (Hint: Click the tooltip that appears when you hover over the graph).';
+  }
+  $('#win-rate-text').text(text);
+};
+
+var arrayToSentence = function(arr){
+  if (arr.length > 1) {
+    var last = arr.pop();
+    return arr.join(', ') + ' and ' + last + '.';
+  } else {
+    return arr[0] + '.';
+  }
+};
 
 app.getNewData = function(){
   var params = {};
@@ -533,7 +620,7 @@ app.getNewData = function(){
       return {
         slot: index,
         item: item
-      }
+      };
     }
   }).filter(Boolean);
 
@@ -551,6 +638,8 @@ app.getNewData = function(){
   ajaxPromise.done(function(itemData){
     app.state.data[0] = itemData.itemData511;
     app.state.data[1] = itemData.itemData514;
+    app.state.winRate[0] = itemData.winRate511;
+    app.state.winRate[1] = itemData.winRate514;
     updateGraph();
   });
 }
@@ -571,6 +660,18 @@ $(window).load(function() {
     app.state.patch = position == 'first' ? '5.11' : '5.14';
 
     updateGraph();
+  });
+
+  var showAnalysis = false;
+  $('.btn').click(function(){
+    if (!showAnalysis) {
+      $(this).text('Hide Analysis');
+      $('#analysis').slideDown();
+    } else {
+      $(this).text('Show Analysis');
+      $('#analysis').slideUp();
+    }
+    showAnalysis = !showAnalysis;
   });
 
   // Populate dropdown options

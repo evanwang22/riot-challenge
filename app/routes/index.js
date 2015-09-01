@@ -3,6 +3,20 @@ var router = express.Router();
 var db = require('../db');
 var _ = require('lodash');
 
+var cacheData;
+
+var matchData511 = db.get('511');
+var matchData514 = db.get('514');
+
+var promises = [matchData511.find({}), matchData514.find({})];
+
+Promise.all(promises).then(function(values){
+  var data = values.map(function(docs){
+    return buildMatchData(docs);
+  });
+  cacheData = data;
+});
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Riot Challenge' });
@@ -10,17 +24,7 @@ router.get('/', function(req, res, next) {
 
 /* GET data for all items, async */
 router.get('/data', function(req, res, next) {
-  var matchData511 = db.get('511');
-  var matchData514 = db.get('514');
-
-  var promises = [matchData511.find({}), matchData514.find({})];
-
-  Promise.all(promises).then(function(values){
-    var data = values.map(function(docs){
-      return buildMatchData(docs);
-    });
-    res.json({ itemData511: data[0], itemData514: data[1] });
-  });
+  res.json({ itemData511: cacheData[0], itemData514: cacheData[1], winRate511: null, winRate514: null });
 });
 
 /* GET data for a single item in fixed slot, async */
@@ -29,7 +33,7 @@ router.get('/singleItemData', function(req, res, next) {
   var searchQuery = {};
 
   if (req.query.champion) {
-    searchQuery['champion'] = req.query.champion
+    searchQuery['champion'] = req.query.champion;
   }
 
   if (req.query.lockedBars) {
@@ -52,7 +56,16 @@ router.get('/singleItemData', function(req, res, next) {
     var data = values.map(function(docs){
       return buildMatchData(docs);
     });
-    res.json({ itemData511: data[0], itemData514: data[1] });
+
+    var winRates = values.map(function(docs){
+      var winners = docs.filter(function(doc){
+        return doc.win === true;
+      }).length;
+
+      return winners/docs.length;
+    });
+
+    res.json({ itemData511: data[0], itemData514: data[1], winRate511: winRates[0], winRate514: winRates[1] });
   });
 });
 
