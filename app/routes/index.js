@@ -19,7 +19,7 @@ Promise.all(promises).then(function(values){
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Riot Challenge' });
+  res.render('index', { title: 'BuildTrends' });
 });
 
 /* GET data for all items, async */
