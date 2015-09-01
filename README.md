@@ -1,6 +1,6 @@
 # AP Item Build Trends
 
-http://riotchallenge.cfapps.io/
+http://buildtrends.cfapps.io/
 
 ## Project setup
 
